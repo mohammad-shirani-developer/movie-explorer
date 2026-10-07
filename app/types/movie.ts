@@ -1,9 +1,19 @@
 export type Movie = {
-  id: number;
-  title: string;
+  id: string;
+  name: string;
+  description: string;
   poster: string;
-  overview: string;
-  releaseDate: string;
-  rating: number;
+  background: string;
+  imdbRating: string;
   genres: string[];
+  released: string;
+  runtime: string;
+  cast: string[];
+  director: string[];
+  year: string;
+};
+
+export type MoviesResponse = {
+  metas: Movie[];
+  hasMore: boolean;
 };
