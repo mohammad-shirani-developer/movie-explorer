@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import MovieCard from "../components/MovieCard";
 import { getPopularMovies } from "../lib/api";
 
 const MoviesContent = async () => {
@@ -12,15 +13,7 @@ const MoviesContent = async () => {
       <h1>Movie Explorer</h1>
       <ul>
         {movies.map((movie) => (
-          <li key={movie.id}>
-            <img src={movie.poster} alt={movie.name} />
-
-            <h2>{movie.name}</h2>
-
-            <p>IMDb: {movie.imdbRating}</p>
-            <p>Year: {movie.year}</p>
-            <p>Genres: {movie.genres.join(", ")}</p>
-          </li>
+          <MovieCard key={movie.id} movie={movie} />
         ))}
       </ul>
     </div>
