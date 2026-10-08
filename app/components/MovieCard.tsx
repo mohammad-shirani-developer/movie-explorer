@@ -8,14 +8,16 @@ type MovieCardProps = {
 const MovieCard = ({ movie }: MovieCardProps) => {
   return (
     <li className="overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-lg">
-      <div className="relative aspect-[2/3] w-full">
-        <Image
-          src={movie.poster}
-          alt={movie.name}
-          fill
-          className="object-cover"
-        />
-      </div>
+      <Link href={`/movies/${movie.id}`}>
+        <div className="relative aspect-[2/3] w-full">
+          <Image
+            src={movie.poster}
+            alt={movie.name}
+            fill
+            className="object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+      </Link>
 
       <div className="p-4">
         <Link href={`/movies/${movie.id}`}>

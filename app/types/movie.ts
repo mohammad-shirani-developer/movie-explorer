@@ -11,9 +11,14 @@ export type Movie = {
   cast: string[];
   director: string[];
   year: string;
+  country: string;
 };
 
 export type MoviesResponse = {
   metas: Movie[];
   hasMore: boolean;
+};
+
+export type MovieResponse = {
+  meta: Movie;
 };
