@@ -22,3 +22,16 @@ export type MoviesResponse = {
 export type MovieResponse = {
   meta: Movie;
 };
+
+export type MovieSearchResponse = {
+  metas: MovieSearchResult[];
+  hasMore: boolean;
+};
+
+export type MovieSearchResult = {
+  id: string;
+  name: string;
+  poster: string;
+  background: string;
+  releaseInfo: string;
+};
