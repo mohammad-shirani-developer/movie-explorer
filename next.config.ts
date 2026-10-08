@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.metahub.space",
       },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "live.metahub.space",
+      },
     ],
   },
   turbopack: {
