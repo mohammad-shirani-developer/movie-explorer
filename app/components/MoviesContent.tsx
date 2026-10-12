@@ -18,6 +18,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
   const [allMovies, setAllMovies] = useState(movies);
   const [hasMoreMovies, setHasMoreMovies] = useState(hasMore);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [loadMoreError, setLoadMoreError] = useState(false);
   const observerTarget = useRef<HTMLDivElement | null>(null);
 
   const isLoadingRef = useRef(false);
@@ -27,7 +28,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
     if (isLoadingRef.current || !hasMoreMovies) {
       return;
     }
-
+    setLoadMoreError(false);
     isLoadingRef.current = true;
     setIsLoadingMore(true);
 
@@ -49,6 +50,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
       setHasMoreMovies(nextData.hasMore);
     } catch (error) {
       console.error("Failed to load more movies:", error);
+      setLoadMoreError(true);
     } finally {
       isLoadingRef.current = false;
       setIsLoadingMore(false);
@@ -196,13 +198,25 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
 
               <div ref={observerTarget} className="h-10" aria-hidden="true" />
               <div
-                className="flex h-10 items-center justify-center"
+                className="flex min-h-10 items-center justify-center"
                 aria-live="polite"
               >
-                {isLoadingMore && (
-                  <p className="text-sm text-gray-500">
-                    Loading more movies...
-                  </p>
+                {isLoadingMore && <p>Loading more movies...</p>}
+
+                {loadMoreError && !isLoadingMore && (
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-sm text-red-600">
+                      Failed to load more movies.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => void loadMoreMovies()}
+                      className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                    >
+                      Try Again
+                    </button>
+                  </div>
                 )}
               </div>
             </>
