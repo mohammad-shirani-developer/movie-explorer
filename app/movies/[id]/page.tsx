@@ -33,9 +33,21 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
         </h1>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <span className="rounded-md bg-yellow-400 px-3 py-1 text-sm font-semibold text-gray-900">
-            IMDb {movie.imdbRating}
-          </span>
+          <p
+            className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
+              movie.imdbRating &&
+              movie.imdbRating !== "N/A" &&
+              Number.isFinite(Number(movie.imdbRating))
+                ? "bg-yellow-400 text-gray-900"
+                : "bg-gray-100 text-gray-600"
+            }`}
+          >
+            {movie.imdbRating &&
+            movie.imdbRating !== "N/A" &&
+            Number.isFinite(Number(movie.imdbRating))
+              ? `IMDb ${movie.imdbRating}`
+              : "Not Rated"}
+          </p>
 
           <span className="text-sm font-medium text-gray-600">
             Released: {movie.year}
