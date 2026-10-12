@@ -6,7 +6,7 @@ const MoviesPageContent = async () => {
   const data = await getPopularMovies();
   const movies = data.metas;
 
-  return <MoviesContent movies={movies} />;
+  return <MoviesContent movies={movies} hasMore={data.hasMore} />;
 };
 
 const MoviesPage = () => {

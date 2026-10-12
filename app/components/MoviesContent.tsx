@@ -1,28 +1,98 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { getPopularMovies } from "../lib/api";
 import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import MovieSearch from "./MovieSearch";
 
 type MoviesContentProps = {
   movies: Movie[];
+  hasMore: boolean;
 };
 
-const MoviesContent = ({ movies }: MoviesContentProps) => {
+const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("All Genres");
   const [sortBy, setSortBy] = useState("default");
+  const [allMovies, setAllMovies] = useState(movies);
+  const [hasMoreMovies, setHasMoreMovies] = useState(hasMore);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const observerTarget = useRef<HTMLDivElement | null>(null);
+
+  const isLoadingRef = useRef(false);
+  const nextSkipRef = useRef(movies.length);
+
+  const loadMoreMovies = useCallback(async () => {
+    if (isLoadingRef.current || !hasMoreMovies) {
+      return;
+    }
+
+    isLoadingRef.current = true;
+    setIsLoadingMore(true);
+
+    try {
+      const nextData = await getPopularMovies(nextSkipRef.current);
+
+      nextSkipRef.current += nextData.metas.length;
+
+      setAllMovies((currentMovies) => {
+        const existingIds = new Set(currentMovies.map((movie) => movie.id));
+
+        const newMovies = nextData.metas.filter(
+          (movie) => !existingIds.has(movie.id),
+        );
+
+        return [...currentMovies, ...newMovies];
+      });
+
+      setHasMoreMovies(nextData.hasMore);
+    } catch (error) {
+      console.error("Failed to load more movies:", error);
+    } finally {
+      isLoadingRef.current = false;
+      setIsLoadingMore(false);
+    }
+  }, [hasMoreMovies]);
+
+  useEffect(() => {
+    if (hasSearched || !hasMoreMovies) {
+      return;
+    }
+
+    const target = observerTarget.current;
+
+    if (!target) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void loadMoreMovies();
+        }
+      },
+      {
+        rootMargin: "1500px 0px",
+      },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasSearched, hasMoreMovies, loadMoreMovies, allMovies.length]);
 
   const genres = [
     "All Genres",
-    ...Array.from(new Set(movies.flatMap((movie) => movie.genres))),
+    ...Array.from(new Set(allMovies.flatMap((movie) => movie.genres))),
   ];
 
   const filteredMovies =
     selectedGenre === "All Genres"
-      ? movies
-      : movies.filter((movie) => movie.genres.includes(selectedGenre));
+      ? allMovies
+      : allMovies.filter((movie) => movie.genres.includes(selectedGenre));
   const sortedMovies = [...filteredMovies].sort((a, b) => {
     if (sortBy === "default") {
       return 0;
@@ -113,15 +183,29 @@ const MoviesContent = ({ movies }: MoviesContentProps) => {
       {!hasSearched && (
         <>
           <p className="mb-4 px-4 text-sm text-gray-500 lg:px-8">
-            Showing {filteredMovies.length} movies
+            {filteredMovies.length} movies loaded
             {selectedGenre !== "All Genres" && ` in ${selectedGenre}`}
           </p>
           {filteredMovies.length > 0 ? (
-            <ul className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
-              {sortedMovies.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
-              ))}
-            </ul>
+            <>
+              <ul className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+                {sortedMovies.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} />
+                ))}
+              </ul>
+
+              <div ref={observerTarget} className="h-10" aria-hidden="true" />
+              <div
+                className="flex h-10 items-center justify-center"
+                aria-live="polite"
+              >
+                {isLoadingMore && (
+                  <p className="text-sm text-gray-500">
+                    Loading more movies...
+                  </p>
+                )}
+              </div>
+            </>
           ) : (
             <div className="flex min-h-[300px] items-center justify-center px-4">
               <div className="w-full max-w-md px-6 py-10 text-center">
