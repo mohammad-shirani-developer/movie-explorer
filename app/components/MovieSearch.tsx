@@ -45,10 +45,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
 
   return (
     <div>
-      <form
-        onSubmit={handleSearch}
-        className="mx-auto my-6 flex max-w-2xl gap-3"
-      >
+      <form onSubmit={handleSearch} className="flex w-full gap-3">
         <input
           type="text"
           placeholder="Search movies..."
