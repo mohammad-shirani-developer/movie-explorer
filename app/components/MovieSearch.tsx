@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SubmitEvent, useState } from "react";
 import { searchMovies } from "../lib/api";
 import type { MovieSearchResult } from "../types/movie";
 import MovieSearchCard from "./MovieSearchCard";
@@ -16,12 +16,11 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleSearch = async (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const performSearch = async () => {
     if (!query.trim()) {
       return;
     }
+
     onSearch(true);
     setHasSearched(true);
     setIsLoading(true);
@@ -29,18 +28,19 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
 
     try {
       const data = await searchMovies(query);
-
       setResults(data.metas);
-      onSearch(true);
     } catch (error) {
       console.error("Search error:", error);
-
       setError("Something went wrong. Please try again.");
       setResults([]);
-      onSearch(true);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await performSearch();
   };
 
   return (
@@ -92,6 +92,13 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
             <p className="mt-2 text-sm text-red-600">
               We couldn&apos;t complete your search. Please try again.
             </p>
+            <button
+              type="button"
+              onClick={() => void performSearch()}
+              className="mt-4 rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+            >
+              Try Again
+            </button>
           </div>
         </div>
       )}
