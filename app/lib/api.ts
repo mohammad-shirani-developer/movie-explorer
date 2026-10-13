@@ -20,15 +20,20 @@ export const getPopularMovies = async (skip = 0): Promise<MoviesResponse> => {
 };
 
 export const getMovieById = async (id: string): Promise<Movie | null> => {
-  const response = await fetch(`${CINEMETA_BASE_URL}/meta/movie/${id}.json`);
+  try {
+    const response = await fetch(`${CINEMETA_BASE_URL}/meta/movie/${id}.json`);
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return null;
+    }
+
+    const data: MovieResponse = await response.json();
+
+    return data.meta ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch movie details for ${id}:`, error);
     return null;
   }
-
-  const data: MovieResponse = await response.json();
-
-  return data.meta;
 };
 
 export const searchMovies = async (
