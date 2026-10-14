@@ -193,7 +193,13 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
           </>
         )}
 
-        <div className="min-w-0 w-full md:col-span-2 lg:col-span-1 xl:col-span-1">
+        <div
+          className={`min-w-0 w-full ${
+            hasSearched
+              ? "md:col-span-2 lg:col-span-3 xl:col-span-4"
+              : "md:col-span-2 lg:col-span-1 xl:col-span-1"
+          }`}
+        >
           <MovieSearch onSearch={setHasSearched} />
         </div>
       </div>
