@@ -7,22 +7,22 @@ type MovieCardProps = {
 };
 const MovieCard = ({ movie }: MovieCardProps) => {
   return (
-    <li className="overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-lg">
+    <li className="overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40 hover:shadow-lg hover:shadow-black/20">
       <Link href={`/movies/${movie.id}`}>
-        <div className="relative aspect-[2/3] w-full overflow-hidden bg-gray-200">
+        <div className="group relative aspect-[2/3] w-full overflow-hidden bg-gray-800">
           <MoviePoster src={movie.poster} alt={movie.name} />
         </div>
       </Link>
 
-      <div className="p-4">
+      <div className="p-4 sm:p-5">
         <Link href={`/movies/${movie.id}`}>
-          <h2 className="line-clamp-2 text-lg font-semibold transition-colors hover:text-gray-600">
+          <h2 className="line-clamp-2 text-lg font-semibold text-white transition-colors hover:text-amber-400">
             {movie.name}
           </h2>
         </Link>
 
-        <div className="mt-3 space-y-3">
-          <div className="flex items-center gap-3">
+        <div className="mt-4 space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
                 movie.imdbRating &&
@@ -39,8 +39,8 @@ const MovieCard = ({ movie }: MovieCardProps) => {
                 : "Not Rated"}
             </p>
 
-            <p className="text-sm font-medium text-gray-500">
-              Released: <span className="text-gray-800">{movie.year}</span>
+            <p className="text-sm font-medium text-gray-400">
+              Released: <span className="text-gray-200">{movie.year}</span>
             </p>
           </div>
 
@@ -48,7 +48,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             {movie.genres.map((genre) => (
               <span
                 key={genre}
-                className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700"
+                className="rounded-full border border-white/10 bg-gray-800 px-2 py-1 text-xs font-medium text-gray-300"
               >
                 {genre}
               </span>
