@@ -128,12 +128,15 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
     return sortBy === "rating-desc" ? ratingB - ratingA : ratingA - ratingB;
   });
 
+  const hasActiveFilters =
+    selectedGenre !== "All Genres" || sortBy !== "default";
+
   return (
     <div>
-      <div className="mb-6 mt-6 flex flex-col gap-4 px-4 sm:flex-row sm:items-end lg:px-8">
+      <div className="mb-6 mt-6 grid grid-cols-1 items-end gap-4 px-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:px-8">
         {!hasSearched && (
           <>
-            <div className="w-full sm:max-w-xs">
+            <div className="min-w-0 w-full">
               <label
                 htmlFor="genre"
                 className="mb-2 block text-sm font-semibold text-gray-900"
@@ -174,10 +177,23 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 <option value="rating-asc">Lowest IMDb Rating</option>
               </select>
             </div>
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedGenre("All Genres");
+                  setSortBy("default");
+                }}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 md:col-span-2 lg:col-span-1"
+              >
+                Reset Filters
+              </button>
+            )}
           </>
         )}
 
-        <div className="w-full flex-1">
+        <div className="min-w-0 w-full md:col-span-2 lg:col-span-1 xl:col-span-1">
           <MovieSearch onSearch={setHasSearched} />
         </div>
       </div>
