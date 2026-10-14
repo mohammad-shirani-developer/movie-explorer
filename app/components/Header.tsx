@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <header className="border-b border-white/10 bg-gray-950 text-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex w-full items-center justify-between px-4 py-5 sm:px-6 lg:px-10 2xl:px-12">
         <Link
           href="/"
           className="text-xl font-extrabold tracking-tight sm:text-2xl"
