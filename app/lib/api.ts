@@ -8,15 +8,29 @@ import type {
 const CINEMETA_BASE_URL = "https://v3-cinemeta.strem.io";
 
 export const getPopularMovies = async (skip = 0): Promise<MoviesResponse> => {
-  const response = await fetch(
-    `${CINEMETA_BASE_URL}/catalog/movie/top${skip > 0 ? `/skip=${skip}` : ""}.json`,
-  );
+  const url = `${CINEMETA_BASE_URL}/catalog/movie/top${skip > 0 ? `/skip=${skip}` : ""}.json`;
 
-  if (!response.ok) {
-    throw new Error(`Cinemeta request failed: ${response.status}`);
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Cinemeta request failed: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
   }
 
-  return response.json();
+  throw lastError;
 };
 
 export const getMovieById = async (id: string): Promise<Movie | null> => {
