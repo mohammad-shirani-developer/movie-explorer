@@ -18,7 +18,7 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
 
   return (
     <main className="min-h-screen bg-gray-950 px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-12">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)]  lg:gap-12">
         <div className="group relative mx-auto aspect-[2/3] w-full max-w-sm self-center overflow-hidden rounded-2xl border border-white/10 bg-gray-900 shadow-2xl shadow-black/30 lg:mx-0">
           <MoviePoster src={movie.poster} alt={movie.name} />
         </div>
