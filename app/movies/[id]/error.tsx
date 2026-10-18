@@ -4,10 +4,9 @@ import { useEffect } from "react";
 
 type MovieDetailsErrorProps = {
   error: Error & { digest?: string };
-  reset: () => void;
 };
 
-const MovieDetailsError = ({ error, reset }: MovieDetailsErrorProps) => {
+const MovieDetailsError = ({ error }: MovieDetailsErrorProps) => {
   useEffect(() => {
     console.error("Movie details error:", error);
   }, [error]);
@@ -32,7 +31,7 @@ const MovieDetailsError = ({ error, reset }: MovieDetailsErrorProps) => {
 
         <button
           type="button"
-          onClick={reset}
+          onClick={() => window.location.reload()}
           className="mt-6 inline-flex items-center justify-center rounded-lg bg-amber-400 px-5 py-3 text-sm font-bold text-gray-950 transition-colors hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-950"
         >
           Try Again
