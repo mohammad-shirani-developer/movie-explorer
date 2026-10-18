@@ -5,6 +5,7 @@ import { getPopularMovies } from "../lib/api";
 import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import MovieSearch from "./MovieSearch";
+import MovieCardSkeleton from "./skeletons/MovieCardSkeleton";
 
 type MoviesContentProps = {
   movies: Movie[];
@@ -239,12 +240,16 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   aria-live="polite"
                 >
                   {isLoadingMore && (
-                    <div className="flex items-center gap-3 py-4 text-sm text-gray-400">
-                      <div
-                        className="h-5 w-5 animate-spin rounded-full border-2 border-white/10 border-t-amber-400"
-                        aria-hidden="true"
-                      />
-                      <p>Loading more movies...</p>
+                    <div className="w-full space-y-4 py-4" aria-busy="true">
+                      <p className="text-center text-sm text-gray-400">
+                        Loading more movies...
+                      </p>
+
+                      <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7">
+                        {Array.from({ length: 4 }, (_, index) => (
+                          <MovieCardSkeleton key={index} />
+                        ))}
+                      </ul>
                     </div>
                   )}
 

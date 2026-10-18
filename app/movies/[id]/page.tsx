@@ -1,4 +1,5 @@
 import MoviePoster from "@/app/components/MoviePoster";
+import MovieDetailsSkeleton from "@/app/components/skeletons/MovieDetailsSkeleton";
 import { getMovieById } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -29,12 +30,12 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <p
-              className={`"inline-flex items-center rounded-md px-3 py-1.5 text-sm font-bold" ${
+              className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
                 movie.imdbRating &&
                 movie.imdbRating !== "N/A" &&
                 Number.isFinite(Number(movie.imdbRating))
-                  ? "bg-amber-400 text-gray-950"
-                  : "border border-white/10 bg-gray-800 text-gray-400"
+                  ? "bg-yellow-400 text-gray-900"
+                  : "bg-gray-100 text-gray-600"
               }`}
             >
               {movie.imdbRating &&
@@ -127,25 +128,7 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
 
 const MovieDetailsPage = ({ params }: MovieDetailsPageProps) => {
   return (
-    <Suspense
-      fallback={
-        <main className="min-h-screen bg-gray-950 px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
-          <div
-            className="mx-auto flex min-h-[300px] w-full max-w-7xl flex-col items-center justify-center"
-            role="status"
-            aria-live="polite"
-          >
-            <div
-              className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-amber-400"
-              aria-hidden="true"
-            />
-            <p className="mt-5 text-sm font-medium text-gray-400">
-              Loading movie details...
-            </p>
-          </div>
-        </main>
-      }
-    >
+    <Suspense fallback={<MovieDetailsSkeleton />}>
       <MovieDetailsContent params={params} />
     </Suspense>
   );

@@ -4,6 +4,7 @@ import { useRef, useState, type SubmitEvent } from "react";
 import { getMovieById, searchMovies } from "../lib/api";
 import type { Movie, MovieSearchResult } from "../types/movie";
 import MovieSearchCard from "./MovieSearchCard";
+import MovieSearchCardSkeleton from "./skeletons/MovieSearchCardSkeleton";
 
 type MovieSearchProps = {
   onSearch: (hasResults: boolean) => void;
@@ -122,11 +123,16 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
       </form>
 
       {isLoading && (
-        <div className="flex min-h-[400px] flex-col items-center justify-center px-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-amber-400" />
-          <p className="mt-5 text-sm font-medium text-gray-400">
+        <div className="mt-6 space-y-4" aria-busy="true">
+          <p className="text-center text-sm font-medium text-gray-400">
             Searching for movies...
           </p>
+
+          <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }, (_, index) => (
+              <MovieSearchCardSkeleton key={index} />
+            ))}
+          </ul>
         </div>
       )}
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import FeaturedMovies from "./components/FeaturedMovies";
+import FeaturedMoviesSkeleton from "./components/skeletons/FeaturedMoviesSkeleton";
 
 const HomePage = async () => {
   return (
@@ -66,13 +67,7 @@ const HomePage = async () => {
         </div>
       </section>
 
-      <Suspense
-        fallback={
-          <section className="px-4 py-16 text-center text-gray-400">
-            Loading featured movies...
-          </section>
-        }
-      >
+      <Suspense fallback={<FeaturedMoviesSkeleton />}>
         <FeaturedMovies />
       </Suspense>
     </main>
