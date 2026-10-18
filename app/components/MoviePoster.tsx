@@ -10,6 +10,7 @@ type MoviePosterProps = {
 
 const MoviePoster = ({ src, alt }: MoviePosterProps) => {
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   if (!src?.trim() || hasError) {
     return (
@@ -24,14 +25,26 @@ const MoviePoster = ({ src, alt }: MoviePosterProps) => {
   }
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      fill
-      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-      className="object-cover transition-transform duration-500 group-hover:scale-105"
-      onError={() => setHasError(true)}
-    />
+    <>
+      {isLoading && (
+        <div
+          className="absolute inset-0 animate-pulse bg-gray-800"
+          aria-hidden="true"
+        />
+      )}
+
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => setHasError(true)}
+      />
+    </>
   );
 };
 
