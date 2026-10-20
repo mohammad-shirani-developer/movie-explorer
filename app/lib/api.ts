@@ -54,21 +54,25 @@ export const searchMovies = async (
 ): Promise<MovieSearchResponse> => {
   const url = `${CINEMETA_BASE_URL}/catalog/movie/top/search=${encodeURIComponent(query)}.json`;
 
-  try {
-    const response = await fetch(url);
+  let lastError: unknown;
 
-    if (!response.ok) {
-      throw new Error(`Cinemeta search failed: ${response.status}`);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Cinemeta search failed: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
     }
-
-    return response.json();
-  } catch {
-    const retryResponse = await fetch(url);
-
-    if (!retryResponse.ok) {
-      throw new Error(`Cinemeta search failed: ${retryResponse.status}`);
-    }
-
-    return retryResponse.json();
   }
+
+  throw lastError;
 };
