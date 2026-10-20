@@ -17,6 +17,17 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
     notFound();
   }
 
+  const rating = Number(movie.imdbRating);
+
+  const hasRating =
+    movie.imdbRating?.trim() !== "" &&
+    movie.imdbRating !== "N/A" &&
+    Number.isFinite(rating);
+
+  const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
+  const cast = movie.cast?.filter((actor) => actor.trim()) ?? [];
+  const directors = movie.director?.filter((name) => name.trim()) ?? [];
+
   return (
     <main className="min-h-screen bg-gray-950 px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)]  lg:gap-12">
@@ -31,18 +42,12 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
-                movie.imdbRating &&
-                movie.imdbRating !== "N/A" &&
-                Number.isFinite(Number(movie.imdbRating))
+                hasRating
                   ? "bg-yellow-400 text-gray-900"
                   : "bg-gray-100 text-gray-600"
               }`}
             >
-              {movie.imdbRating &&
-              movie.imdbRating !== "N/A" &&
-              Number.isFinite(Number(movie.imdbRating))
-                ? `IMDb ${movie.imdbRating}`
-                : "Not Rated"}
+              {hasRating ? `IMDb ${movie.imdbRating}` : "Not Rated"}
             </p>
 
             <span className="text-sm font-medium text-gray-400">
@@ -59,26 +64,23 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
             )}
           </div>
           <div className="mt-5 min-h-7">
-            {movie.genres?.some((genre) => genre.trim()) && (
+            {genres.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {movie.genres
-                  .filter((genre) => genre.trim())
-                  .map((genre) => (
-                    <span
-                      key={genre}
-                      className="inline-flex items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-sm font-medium text-amber-300"
-                    >
-                      {genre}
-                    </span>
-                  ))}
+                {genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="inline-flex items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-sm font-medium text-amber-300"
+                  >
+                    {genre}
+                  </span>
+                ))}
               </div>
             )}
           </div>
           <div className="mt-6 space-y-3 text-sm leading-6 text-gray-300">
             <p>
               <span className="font-semibold text-gray-400">Director:</span>{" "}
-              {movie.director?.filter((name) => name.trim()).join(", ") ||
-                "Not Available"}
+              {directors.length > 0 ? directors.join(", ") : "Not Available"}
             </p>
 
             <div className="min-h-5">
@@ -99,7 +101,7 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
           </div>
 
           <div className="mt-4 min-h-7">
-            {movie.cast?.some((actor) => actor.trim()) && (
+            {cast.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold tracking-tight text-white">
                   Cast
