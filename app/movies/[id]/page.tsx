@@ -108,16 +108,14 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
                 </h2>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {movie.cast
-                    .filter((actor) => actor.trim())
-                    .map((actor) => (
-                      <span
-                        key={actor}
-                        className="inline-flex items-center rounded-full border border-white/10 bg-gray-900 px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors hover:border-amber-400/30 hover:text-amber-300"
-                      >
-                        {actor}
-                      </span>
-                    ))}
+                  {cast.map((actor) => (
+                    <span
+                      key={actor}
+                      className="inline-flex items-center rounded-full border border-white/10 bg-gray-900 px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors hover:border-amber-400/30 hover:text-amber-300"
+                    >
+                      {actor}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}

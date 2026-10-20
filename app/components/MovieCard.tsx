@@ -11,6 +11,8 @@ const MovieCard = ({ movie }: MovieCardProps) => {
     movie.imdbRating?.trim() !== "" &&
     movie.imdbRating !== "N/A" &&
     Number.isFinite(rating);
+
+  const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
   return (
     <li className="overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40 hover:shadow-lg hover:shadow-black/20">
       <Link href={`/movies/${movie.id}`}>
@@ -47,8 +49,8 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {movie.genres.length > 0 ? (
-              movie.genres.map((genre) => (
+            {genres.length > 0 ? (
+              genres.map((genre) => (
                 <span
                   key={genre}
                   className="rounded-full border border-white/10 bg-gray-800 px-2 py-1 text-xs font-medium text-gray-300"
