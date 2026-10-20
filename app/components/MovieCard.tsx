@@ -6,6 +6,11 @@ type MovieCardProps = {
   movie: Movie;
 };
 const MovieCard = ({ movie }: MovieCardProps) => {
+  const rating = Number(movie.imdbRating);
+  const hasRating =
+    movie.imdbRating?.trim() !== "" &&
+    movie.imdbRating !== "N/A" &&
+    Number.isFinite(rating);
   return (
     <li className="overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40 hover:shadow-lg hover:shadow-black/20">
       <Link href={`/movies/${movie.id}`}>
@@ -25,34 +30,35 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           <div className="flex flex-wrap items-center  gap-x-3 gap-y-2">
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
-                movie.imdbRating &&
-                movie.imdbRating !== "N/A" &&
-                Number.isFinite(Number(movie.imdbRating))
+                hasRating
                   ? "bg-yellow-400 text-gray-900"
                   : "bg-gray-100 text-gray-600"
               }`}
             >
-              {movie.imdbRating &&
-              movie.imdbRating !== "N/A" &&
-              Number.isFinite(Number(movie.imdbRating))
-                ? `IMDb ${movie.imdbRating}`
-                : "Not Rated"}
+              {hasRating ? `IMDb ${movie.imdbRating}` : "Not Rated"}
             </p>
 
             <p className="text-sm font-medium text-gray-400">
-              Released: <span className="text-gray-200">{movie.year}</span>
+              Released:{" "}
+              <span className="text-gray-200">
+                {movie.year?.trim() || "Year unknown"}
+              </span>
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {movie.genres.map((genre) => (
-              <span
-                key={genre}
-                className="rounded-full border border-white/10 bg-gray-800 px-2 py-1 text-xs font-medium text-gray-300"
-              >
-                {genre}
-              </span>
-            ))}
+            {movie.genres.length > 0 ? (
+              movie.genres.map((genre) => (
+                <span
+                  key={genre}
+                  className="rounded-full border border-white/10 bg-gray-800 px-2 py-1 text-xs font-medium text-gray-300"
+                >
+                  {genre}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-gray-500">Genres unavailable</span>
+            )}
           </div>
         </div>
       </div>
