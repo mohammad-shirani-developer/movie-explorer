@@ -89,13 +89,19 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
 
   const genres = [
     "All Genres",
-    ...Array.from(new Set(allMovies.flatMap((movie) => movie.genres))),
+    ...Array.from(
+      new Set(
+        allMovies.flatMap(
+          (movie) => movie.genres?.filter((genre) => genre.trim()) ?? [],
+        ),
+      ),
+    ),
   ];
 
   const filteredMovies =
     selectedGenre === "All Genres"
       ? allMovies
-      : allMovies.filter((movie) => movie.genres.includes(selectedGenre));
+      : allMovies.filter((movie) => movie.genres?.includes(selectedGenre));
   const sortedMovies = [...filteredMovies].sort((a, b) => {
     if (sortBy === "default") {
       return 0;
