@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Movie Explorer
+
+A movie discovery web application built with Next.js, TypeScript, and Tailwind CSS, powered by the Cinemeta API.
+
+## Features
+
+- Browse popular movies.
+- Search for movies by title.
+- View detailed movie information.
+- Filter and sort movie listings.
+- Load more movies.
+- Responsive design for mobile, tablet, and desktop.
+- Loading skeletons for a smoother user experience.
+- Error handling with retry options.
+- Movie poster fallbacks when images are unavailable.
+
+## Tech Stack
+
+- **Next.js** — React framework
+- **React** — UI development
+- **TypeScript** — Type safety
+- **Tailwind CSS** — Styling
+- **Cinemeta API** — Movie data
+- **Next.js Image** — Image optimization
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js
+- npm
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/mohammad-shirani-developer/movie-explorer.git
+   ```
 
-## Learn More
+2. Navigate to the project directory:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cd movie-explorer
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Install dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+4. Start the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Available Scripts
+
+- `npm run dev` — Start the development server.
+- `npm run build` — Create a production build.
+- `npm run lint` — Run ESLint.
+
+## Project Status
+
+The application has been tested for TypeScript errors, ESLint issues, production build, responsive layouts, and its main features.
+
+## Screenshots
+
+Screenshots will be added soon.
+
+## Live Demo
+
+Coming soon.
