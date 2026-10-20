@@ -22,7 +22,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
         </Link>
 
         <div className="mt-4 space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center  gap-x-3 gap-y-2">
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
                 movie.imdbRating &&
