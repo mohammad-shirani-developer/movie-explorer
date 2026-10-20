@@ -15,6 +15,7 @@ const MovieSearchCard = ({
 }: MovieSearchCardProps) => {
   const rating = Number(details?.imdbRating);
   const hasRating = Number.isFinite(rating) && rating > 0;
+  const genres = details?.genres?.filter((genre) => genre.trim()) ?? [];
 
   return (
     <li className="group overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/40 hover:shadow-xl hover:shadow-black/20">
@@ -55,8 +56,8 @@ const MovieSearchCard = ({
             <div className="mt-4 flex min-h-7 flex-wrap items-start gap-2">
               {isLoadingDetails && !details ? (
                 <span className="text-xs text-gray-500">Loading genres...</span>
-              ) : details?.genres?.length ? (
-                details.genres.map((genre) => (
+              ) : genres.length > 0 ? (
+                genres.map((genre) => (
                   <span
                     key={genre}
                     className="inline-flex max-w-full items-center rounded-full border border-amber-400/20 bg-amber-400/10 px-2.5 py-1 text-xs font-medium leading-5 text-amber-300"
