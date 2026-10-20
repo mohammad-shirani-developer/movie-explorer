@@ -41,7 +41,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
     try {
       const data = await searchMovies(trimmedQuery);
 
-      // Ignore an older search response.
+      // Ignore results from a previous search if a newer search has started.
       if (currentSearchId !== searchIdRef.current) return;
 
       const movies = data.metas ?? [];
@@ -52,14 +52,29 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
       if (movies.length === 0) return;
 
       // Load details without blocking the initial search results.
+
       const details = await Promise.all(
-        movies.map(async (movie) => ({
-          id: movie.id,
-          details: await getMovieById(movie.id),
-        })),
+        movies.map(async (movie) => {
+          try {
+            return {
+              id: movie.id,
+              details: await getMovieById(movie.id),
+            };
+          } catch (error) {
+            console.error(
+              `Failed to load details for movie ${movie.id}:`,
+              error,
+            );
+
+            return {
+              id: movie.id,
+              details: null,
+            };
+          }
+        }),
       );
 
-      // Ignore details belonging to an older search.
+      // Ignore movie details if a newer search has started.
       if (currentSearchId !== searchIdRef.current) return;
 
       setMovieDetails(
@@ -89,7 +104,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
     setQuery(value);
 
     if (!value.trim()) {
-      // Invalidate pending search and details requests.
+      // Invalidate pending requests so cleared search results cannot reappear.
       searchIdRef.current += 1;
 
       setResults([]);
