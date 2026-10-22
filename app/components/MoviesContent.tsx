@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPopularMovies } from "../lib/api";
+import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import MovieSearch from "./MovieSearch";
@@ -107,28 +108,19 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
       return 0;
     }
 
-    const ratingA = Number(a.imdbRating);
-    const ratingB = Number(b.imdbRating);
+    // Unrated titles always sort below rated ones in both directions.
+    const ratingA = parseImdbRating(a.imdbRating);
+    const ratingB = parseImdbRating(b.imdbRating);
 
-    const hasRatingA =
-      a.imdbRating?.trim() !== "" &&
-      a.imdbRating !== "N/A" &&
-      Number.isFinite(ratingA);
-
-    const hasRatingB =
-      b.imdbRating?.trim() !== "" &&
-      b.imdbRating !== "N/A" &&
-      Number.isFinite(ratingB);
-
-    if (!hasRatingA && !hasRatingB) {
+    if (ratingA === null && ratingB === null) {
       return 0;
     }
 
-    if (!hasRatingA) {
+    if (ratingA === null) {
       return 1;
     }
 
-    if (!hasRatingB) {
+    if (ratingB === null) {
       return -1;
     }
 

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getPopularMovies } from "../lib/api";
+import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
 
 const DESCRIPTION_LIMIT = 220;
@@ -53,11 +54,7 @@ const HeroMovie = async () => {
     return <HeroFallback />;
   }
 
-  const rating = Number(heroMovie.imdbRating);
-  const hasRating =
-    heroMovie.imdbRating?.trim() !== "" &&
-    heroMovie.imdbRating !== "N/A" &&
-    Number.isFinite(rating);
+  const hasRating = parseImdbRating(heroMovie.imdbRating) !== null;
 
   const genres =
     heroMovie.genres?.filter((genre) => genre.trim()).slice(0, 3) ?? [];
@@ -67,11 +64,13 @@ const HeroMovie = async () => {
   const backdropUrl = backgroundUrl ?? posterUrl;
   const isPosterBackdrop = !backgroundUrl && Boolean(posterUrl);
 
+  // Trim first: a whitespace-only description must not render an empty
+  // paragraph, and a long one gets a clean ellipsis cut on a single line.
+  const trimmedDescription = heroMovie.description?.trim() ?? "";
   const description =
-    heroMovie.description?.trim() &&
-    heroMovie.description.length > DESCRIPTION_LIMIT
-      ? `${heroMovie.description.slice(0, DESCRIPTION_LIMIT)}…`
-      : heroMovie.description;
+    trimmedDescription.length > DESCRIPTION_LIMIT
+      ? `${trimmedDescription.slice(0, DESCRIPTION_LIMIT)}…`
+      : trimmedDescription || null;
 
   return (
     <section className="relative min-h-[560px] overflow-hidden sm:min-h-[640px]">

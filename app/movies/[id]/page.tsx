@@ -2,6 +2,7 @@ import Image from "next/image";
 import MoviePoster from "@/app/components/MoviePoster";
 import MovieDetailsSkeleton from "@/app/components/skeletons/MovieDetailsSkeleton";
 import { getMovieById } from "@/app/lib/api";
+import { parseImdbRating } from "@/app/lib/movie-utils";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -18,12 +19,7 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
     notFound();
   }
 
-  const rating = Number(movie.imdbRating);
-
-  const hasRating =
-    movie.imdbRating?.trim() !== "" &&
-    movie.imdbRating !== "N/A" &&
-    Number.isFinite(rating);
+  const hasRating = parseImdbRating(movie.imdbRating) !== null;
 
   const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
   const cast = movie.cast?.filter((actor) => actor.trim()) ?? [];
@@ -186,9 +182,9 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
               </h2>
 
               <div className="mt-3 flex flex-wrap gap-2">
-                {cast.map((actor) => (
+                {cast.map((actor, index) => (
                   <span
-                    key={actor}
+                    key={`${actor}-${index}`}
                     className="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:border-brand/40 hover:text-brand dark:border-white/10 dark:bg-panel dark:text-gray-300 dark:hover:border-brand/40 dark:hover:text-brand"
                   >
                     {actor}

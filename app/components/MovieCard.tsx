@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
 import MoviePoster from "./MoviePoster";
 
@@ -6,11 +7,7 @@ type MovieCardProps = {
   movie: Movie;
 };
 const MovieCard = ({ movie }: MovieCardProps) => {
-  const rating = Number(movie.imdbRating);
-  const hasRating =
-    movie.imdbRating?.trim() !== "" &&
-    movie.imdbRating !== "N/A" &&
-    Number.isFinite(rating);
+  const hasRating = parseImdbRating(movie.imdbRating) !== null;
 
   const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
   return (
@@ -29,7 +26,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
         </Link>
 
         <div className="mt-4 space-y-4">
-          <div className="flex flex-wrap items-center  gap-x-3 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
                 hasRating

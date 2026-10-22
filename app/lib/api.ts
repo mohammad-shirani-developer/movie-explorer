@@ -30,17 +30,23 @@ const sleep = (ms: number) =>
  * Fetches a Cinemeta endpoint with a timeout and automatic retries.
  * Network failures and 5xx responses are retried; other HTTP errors
  * (404, 400, ...) fail immediately with a CinemetaHttpError.
+ * An optional caller signal cancels the request without retries.
  */
-const fetchCinemetaJson = async <T>(path: string): Promise<T> => {
+const fetchCinemetaJson = async <T>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<T> => {
   const url = `${CINEMETA_BASE_URL}${path}`;
+  const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  const requestSignal = signal
+    ? AbortSignal.any([timeoutSignal, signal])
+    : timeoutSignal;
 
   let lastError: unknown;
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     try {
-      const response = await fetch(url, {
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      });
+      const response = await fetch(url, { signal: requestSignal });
 
       if (!response.ok) {
         const httpError = new CinemetaHttpError(response.status);
@@ -62,6 +68,11 @@ const fetchCinemetaJson = async <T>(path: string): Promise<T> => {
         throw error;
       }
 
+      // A caller-initiated cancellation is never retried.
+      if (signal?.aborted) {
+        throw error;
+      }
+
       lastError = error;
 
       if (attempt < MAX_ATTEMPTS - 1) {
@@ -73,15 +84,30 @@ const fetchCinemetaJson = async <T>(path: string): Promise<T> => {
   throw lastError;
 };
 
-export const getPopularMovies = async (skip = 0): Promise<MoviesResponse> => {
+export const getPopularMovies = async (
+  skip = 0,
+  signal?: AbortSignal,
+): Promise<MoviesResponse> => {
   const path = `/catalog/movie/top${skip > 0 ? `/skip=${skip}` : ""}.json`;
+  const data = await fetchCinemetaJson<MoviesResponse>(path, signal);
 
-  return fetchCinemetaJson<MoviesResponse>(path);
+  // Never trust the payload shape blindly: a malformed response must
+  // degrade to an empty list instead of crashing the render tree.
+  return {
+    metas: Array.isArray(data.metas) ? data.metas : [],
+    hasMore: Boolean(data.hasMore),
+  };
 };
 
-export const getMovieById = async (id: string): Promise<Movie | null> => {
+export const getMovieById = async (
+  id: string,
+  signal?: AbortSignal,
+): Promise<Movie | null> => {
   try {
-    const data = await fetchCinemetaJson<MovieResponse>(`/meta/movie/${id}.json`);
+    const data = await fetchCinemetaJson<MovieResponse>(
+      `/meta/movie/${encodeURIComponent(id)}.json`,
+      signal,
+    );
 
     return data.meta ?? null;
   } catch (error) {
@@ -95,8 +121,13 @@ export const getMovieById = async (id: string): Promise<Movie | null> => {
 
 export const searchMovies = async (
   query: string,
+  signal?: AbortSignal,
 ): Promise<MovieSearchResponse> => {
   const path = `/catalog/movie/top/search=${encodeURIComponent(query)}.json`;
+  const data = await fetchCinemetaJson<MovieSearchResponse>(path, signal);
 
-  return fetchCinemetaJson<MovieSearchResponse>(path);
+  return {
+    metas: Array.isArray(data.metas) ? data.metas : [],
+    hasMore: Boolean(data.hasMore),
+  };
 };

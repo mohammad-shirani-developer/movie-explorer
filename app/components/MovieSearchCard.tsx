@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie, MovieSearchResult } from "../types/movie";
 import MoviePoster from "./MoviePoster";
 
@@ -13,8 +14,7 @@ const MovieSearchCard = ({
   details,
   isLoadingDetails,
 }: MovieSearchCardProps) => {
-  const rating = Number(details?.imdbRating);
-  const hasRating = Number.isFinite(rating) && rating > 0;
+  const hasRating = parseImdbRating(details?.imdbRating) !== null;
   const genres = details?.genres?.filter((genre) => genre.trim()) ?? [];
 
   return (
