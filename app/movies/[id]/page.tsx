@@ -85,15 +85,17 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
 
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand">
-              Movie Detail
-            </p>
+            {/* Clear the overlapping poster column (300px + gap) on md+ screens */}
+            <div className="md:pl-[336px]">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand">
+                Movie Detail
+              </p>
 
             <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-5xl dark:text-white">
               {movie.name}
             </h1>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-3">
               {hasRating ? (
                 <span className="rounded-md bg-yellow-400 px-2 py-1 text-sm font-bold text-gray-950">
                   IMDb {movie.imdbRating}
@@ -136,6 +138,7 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
       </section>
