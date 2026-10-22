@@ -32,50 +32,38 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
   const backgroundUrl = movie.background?.trim() || null;
   const posterUrl = movie.poster?.trim() || null;
   const backdropUrl = backgroundUrl ?? posterUrl;
+  const isPosterBackdrop = !backgroundUrl && Boolean(posterUrl);
   const country = movie.country?.trim() && movie.country !== "N/A" ? movie.country : null;
   const runtime =
     movie.runtime?.trim() && movie.runtime !== "N/A" ? movie.runtime : null;
 
   return (
     <main className="min-h-screen">
-      {/* Cinematic backdrop banner — complete artwork over its blurred extension */}
-      <section className="relative h-[440px] overflow-hidden sm:h-[540px]">
+      {/* Cinematic backdrop banner — the artwork IS the banner. The stage keeps
+          the backdrop's own 16:9 ratio on larger screens, so object-cover fills
+          every pixel edge-to-edge with zero crop and no blurred side bands. */}
+      <section className="relative h-[420px] overflow-hidden sm:aspect-video sm:h-auto">
         {backdropUrl ? (
           <>
-            {/* Blurred extension fills the banner so the sides never look empty */}
-            <Image
-              src={backdropUrl}
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              aria-hidden="true"
-              className="scale-110 object-cover blur-2xl"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-white/30 dark:bg-ink/40"
-            />
+            {isPosterBackdrop && (
+              <Image
+                src={backdropUrl}
+                alt=""
+                fill
+                sizes="100vw"
+                aria-hidden="true"
+                className="scale-110 object-cover blur-2xl"
+              />
+            )}
 
-            {/* Soft halo — a gently scaled, medium-blurred copy that bridges the
-                artwork's edges into the backdrop so no hard seam is visible */}
-            <Image
-              src={backdropUrl}
-              alt=""
-              fill
-              sizes="100vw"
-              aria-hidden="true"
-              className="scale-[1.16] object-contain blur-2xl"
-            />
-
-            {/* The complete, uncropped artwork */}
+            {/* The backdrop, whole and uncropped, filling the entire banner */}
             <Image
               src={backdropUrl}
               alt={movie.name}
               fill
               priority
               sizes="100vw"
-              className="object-contain"
+              className={isPosterBackdrop ? "object-contain" : "object-cover"}
             />
           </>
         ) : (

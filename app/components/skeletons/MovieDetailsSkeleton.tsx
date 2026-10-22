@@ -6,7 +6,7 @@ const MovieDetailsSkeleton = () => {
       aria-label="Loading movie details"
     >
       {/* Backdrop banner skeleton */}
-      <section className="relative h-[420px] overflow-hidden sm:h-[480px]">
+      <section className="relative h-[420px] overflow-hidden sm:aspect-video sm:h-auto">
         <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-panel" />
 
         <div className="absolute inset-x-0 bottom-0">
