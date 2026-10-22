@@ -1,17 +1,17 @@
 export type Movie = {
   id: string;
   name: string;
-  description: string;
-  poster: string;
-  background: string;
-  imdbRating: string;
-  genres: string[];
-  released: string;
-  runtime: string;
-  cast: string[];
-  director: string[];
-  year: string;
-  country: string;
+  description: string | null;
+  poster: string | null;
+  background: string | null;
+  imdbRating: string | null;
+  genres: string[] | null;
+  released: string | null;
+  runtime: string | null;
+  cast: string[] | null;
+  director: string[] | null;
+  year: string | null;
+  country: string | null;
 };
 
 export type MoviesResponse = {
@@ -31,7 +31,7 @@ export type MovieSearchResponse = {
 export type MovieSearchResult = {
   id: string;
   name: string;
-  poster: string;
-  background: string;
-  releaseInfo: string;
+  poster: string | null;
+  background: string | null;
+  releaseInfo: string | null;
 };

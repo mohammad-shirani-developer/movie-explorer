@@ -62,8 +62,10 @@ const HeroMovie = async () => {
   const genres =
     heroMovie.genres?.filter((genre) => genre.trim()).slice(0, 3) ?? [];
 
-  const hasBackdrop = Boolean(heroMovie.background?.trim());
-  const backdrop = hasBackdrop ? heroMovie.background : heroMovie.poster;
+  const backgroundUrl = heroMovie.background?.trim() || null;
+  const posterUrl = heroMovie.poster?.trim() || null;
+  const backdropUrl = backgroundUrl ?? posterUrl;
+  const isPosterBackdrop = !backgroundUrl && Boolean(posterUrl);
 
   const description =
     heroMovie.description?.trim() &&
@@ -73,16 +75,23 @@ const HeroMovie = async () => {
 
   return (
     <section className="relative min-h-[560px] overflow-hidden sm:min-h-[640px]">
-      <Image
-        src={backdrop}
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className={`object-cover ${
-          hasBackdrop ? "" : "scale-110 blur-sm"
-        }`}
-      />
+      {backdropUrl ? (
+        <Image
+          src={backdropUrl}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={`object-cover ${
+            isPosterBackdrop ? "scale-110 blur-sm" : ""
+          }`}
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 dark:from-panel dark:via-panel-soft dark:to-ink"
+        />
+      )}
 
       {/* Fade the backdrop into the page background for cinematic legibility */}
       <div

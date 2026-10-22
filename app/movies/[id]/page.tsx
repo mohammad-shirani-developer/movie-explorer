@@ -29,8 +29,10 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
   const cast = movie.cast?.filter((actor) => actor.trim()) ?? [];
   const directors = movie.director?.filter((name) => name.trim()) ?? [];
 
-  const hasBackdrop = Boolean(movie.background?.trim());
-  const backdrop = hasBackdrop ? movie.background : movie.poster;
+  const backgroundUrl = movie.background?.trim() || null;
+  const posterUrl = movie.poster?.trim() || null;
+  const backdropUrl = backgroundUrl ?? posterUrl;
+  const isPosterBackdrop = !backgroundUrl && Boolean(posterUrl);
   const country = movie.country?.trim() && movie.country !== "N/A" ? movie.country : null;
   const runtime =
     movie.runtime?.trim() && movie.runtime !== "N/A" ? movie.runtime : null;
@@ -39,14 +41,23 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
     <main className="min-h-screen">
       {/* Cinematic backdrop banner */}
       <section className="relative h-[420px] overflow-hidden sm:h-[480px]">
-        <Image
-          src={backdrop}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className={`object-cover ${hasBackdrop ? "" : "scale-110 blur-lg"}`}
-        />
+        {backdropUrl ? (
+          <Image
+            src={backdropUrl}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={`object-cover ${
+              isPosterBackdrop ? "scale-110 blur-lg" : ""
+            }`}
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 dark:from-panel dark:via-panel-soft dark:to-ink"
+          />
+        )}
 
         {/* Fade the backdrop into the page background */}
         <div
@@ -122,16 +133,20 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
         </div>
 
         <div>
-          {movie.description?.trim() && (
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                Storyline
-              </h2>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Storyline
+            </h2>
+            {movie.description?.trim() ? (
               <p className="mt-3 text-sm leading-8 text-gray-700 sm:text-base dark:text-gray-300">
                 {movie.description}
               </p>
-            </div>
-          )}
+            ) : (
+              <p className="mt-3 text-sm leading-8 italic text-gray-500 dark:text-gray-500">
+                Storyline is not available for this title yet.
+              </p>
+            )}
+          </div>
 
           <div className="mt-6 space-y-3 text-sm leading-6">
             <p>
