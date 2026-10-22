@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { getPopularMovies } from "../lib/api";
-import type { Movie } from "../types/movie";
+import { getHomeCatalog } from "../lib/home-catalog";
 import MovieCard from "./MovieCard";
 import RetryButton from "./RetryButton";
 
@@ -8,12 +7,9 @@ const FEATURED_START = 11;
 const FEATURED_END = 19;
 
 const FeaturedMovies = async () => {
-  let featuredMovies: Movie[];
+  const catalog = await getHomeCatalog();
 
-  try {
-    const data = await getPopularMovies();
-    featuredMovies = data.metas.slice(FEATURED_START, FEATURED_END);
-  } catch {
+  if (!catalog) {
     return (
       <section className="px-4 py-16 text-center sm:px-6 lg:px-8">
         <p className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -26,6 +22,8 @@ const FeaturedMovies = async () => {
       </section>
     );
   }
+
+  const featuredMovies = catalog.metas.slice(FEATURED_START, FEATURED_END);
 
   if (featuredMovies.length === 0) {
     return null;

@@ -1,18 +1,25 @@
 import Link from "next/link";
-import { getPopularMovies } from "../lib/api";
-import type { Movie } from "../types/movie";
+import { getHomeCatalog } from "../lib/home-catalog";
 import MoviePoster from "./MoviePoster";
 
+const TRENDING_COUNT = 10;
+
 const TrendingRow = async () => {
-  let movies: Movie[] = [];
+  const catalog = await getHomeCatalog();
 
-  try {
-    const data = await getPopularMovies();
-
-    movies = data.metas.slice(1, 11);
-  } catch {
-    movies = [];
+  if (!catalog) {
+    return null;
   }
+
+  // Keep the row in sync with the hero: the hero always consumes the first
+  // movie that has a backdrop (or index 0 as fallback), so trending must
+  // skip exactly that entry instead of blindly slicing from index 1.
+  const metas = catalog.metas;
+  const heroIndex = metas.findIndex((movie) => movie.background?.trim());
+  const consumedIndex = heroIndex === -1 ? 0 : heroIndex;
+  const movies = metas
+    .filter((_, index) => index !== consumedIndex)
+    .slice(0, TRENDING_COUNT);
 
   if (movies.length === 0) {
     return null;

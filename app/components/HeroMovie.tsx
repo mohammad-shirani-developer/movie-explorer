@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPopularMovies } from "../lib/api";
+import { getHomeCatalog } from "../lib/home-catalog";
 import { parseImdbRating } from "../lib/movie-utils";
-import type { Movie } from "../types/movie";
 
 const DESCRIPTION_LIMIT = 220;
 
@@ -37,18 +36,13 @@ const HeroFallback = () => (
 );
 
 const HeroMovie = async () => {
-  let heroMovie: Movie | null = null;
+  const data = await getHomeCatalog();
 
-  try {
-    const data = await getPopularMovies();
-
-    heroMovie =
-      data.metas.find((movie) => movie.background?.trim()) ??
-      data.metas[0] ??
-      null;
-  } catch {
-    heroMovie = null;
-  }
+  const heroMovie = data
+    ? (data.metas.find((movie) => movie.background?.trim()) ??
+        data.metas[0] ??
+        null)
+    : null;
 
   if (!heroMovie) {
     return <HeroFallback />;

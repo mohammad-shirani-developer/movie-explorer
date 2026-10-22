@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type SubmitEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { getMovieById, searchMovies } from "../lib/api";
 import type { Movie, MovieSearchResult } from "../types/movie";
 import MovieSearchCard from "./MovieSearchCard";
@@ -9,6 +9,11 @@ import MovieSearchCardSkeleton from "./skeletons/MovieSearchCardSkeleton";
 type MovieSearchProps = {
   onSearch: (hasResults: boolean) => void;
 };
+
+// Cinemeta search catalogs can return up to 100 metas; fetching the details
+// of every one of them fires ~100 requests per search. Capping the grid
+// keeps the request storm bounded with no practical UX loss.
+const SEARCH_RESULTS_LIMIT = 24;
 
 const MovieSearch = ({ onSearch }: MovieSearchProps) => {
   const [query, setQuery] = useState("");
@@ -22,6 +27,12 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const searchIdRef = useRef(0);
+  const searchAbortRef = useRef<AbortController | null>(null);
+
+  // Cancel any in-flight search when the component unmounts.
+  useEffect(() => {
+    return () => searchAbortRef.current?.abort();
+  }, []);
 
   const performSearch = async () => {
     const trimmedQuery = query.trim();
@@ -29,6 +40,12 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
     if (!trimmedQuery) return;
 
     const currentSearchId = ++searchIdRef.current;
+
+    // Supersede the previous search: its requests are aborted so stale
+    // responses can neither overwrite fresh ones nor keep burning bandwidth.
+    searchAbortRef.current?.abort();
+    const abortController = new AbortController();
+    searchAbortRef.current = abortController;
 
     onSearch(true);
     setHasSearched(true);
@@ -39,12 +56,12 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
     setMovieDetails({});
 
     try {
-      const data = await searchMovies(trimmedQuery);
+      const data = await searchMovies(trimmedQuery, abortController.signal);
 
       // Ignore results from a previous search if a newer search has started.
       if (currentSearchId !== searchIdRef.current) return;
 
-      const movies = data.metas ?? [];
+      const movies = data.metas.slice(0, SEARCH_RESULTS_LIMIT);
       setIsLoadingDetails(movies.length > 0);
       setResults(movies);
       setIsLoading(false);
@@ -58,9 +75,14 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
           try {
             return {
               id: movie.id,
-              details: await getMovieById(movie.id),
+              details: await getMovieById(movie.id, abortController.signal),
             };
           } catch (error) {
+            // A superseded search drops its cancelled details silently.
+            if (abortController.signal.aborted) {
+              return { id: movie.id, details: null };
+            }
+
             console.error(
               `Failed to load details for movie ${movie.id}:`,
               error,
@@ -75,27 +97,40 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
       );
 
       // Ignore movie details if a newer search has started.
-      if (currentSearchId !== searchIdRef.current) return;
+      if (
+        currentSearchId !== searchIdRef.current ||
+        abortController.signal.aborted
+      ) {
+        return;
+      }
 
       setMovieDetails(
         Object.fromEntries(details.map(({ id, details }) => [id, details])),
       );
     } catch (error) {
-      if (currentSearchId !== searchIdRef.current) return;
+      if (
+        currentSearchId !== searchIdRef.current ||
+        abortController.signal.aborted
+      ) {
+        return;
+      }
 
       console.error("Search error:", error);
       setError("Something went wrong. Please try again.");
       setResults([]);
       setMovieDetails({});
     } finally {
-      if (currentSearchId === searchIdRef.current) {
+      if (
+        currentSearchId === searchIdRef.current &&
+        !abortController.signal.aborted
+      ) {
         setIsLoading(false);
         setIsLoadingDetails(false);
       }
     }
   };
 
-  const handleSearch = async (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await performSearch();
   };
@@ -106,6 +141,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
     if (!value.trim()) {
       // Invalidate pending requests so cleared search results cannot reappear.
       searchIdRef.current += 1;
+      searchAbortRef.current?.abort();
 
       setResults([]);
       setMovieDetails({});
