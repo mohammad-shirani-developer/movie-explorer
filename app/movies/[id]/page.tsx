@@ -39,105 +39,108 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
 
   return (
     <main className="min-h-screen">
-      {/* Cinematic backdrop banner — the artwork IS the banner. The stage keeps
-          the backdrop's own 16:9 ratio on larger screens, so object-cover fills
-          every pixel edge-to-edge with zero crop and no blurred side bands. */}
-      <section className="relative h-[420px] overflow-hidden sm:aspect-video sm:h-auto">
-        {backdropUrl ? (
-          <>
-            {isPosterBackdrop && (
+      {/* Cinematic backdrop banner — the artwork plays in its own 16:9 "cinema
+          screen". The screen is capped by the viewport height (max-w-[121vh]
+          => max-h 68vh), so the whole image is visible at once: zero crop, no
+          blurred bands, no seams. Mobile keeps a full-bleed fixed-height crop. */}
+      <section className="sm:pt-6">
+        <div className="relative mx-auto h-[420px] w-full max-w-[121vh] overflow-hidden shadow-2xl shadow-gray-900/15 dark:shadow-black/50 sm:aspect-video sm:h-auto sm:rounded-2xl sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-white/10">
+          {backdropUrl ? (
+            <>
+              {isPosterBackdrop && (
+                <Image
+                  src={backdropUrl}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  aria-hidden="true"
+                  className="scale-110 object-cover blur-2xl"
+                />
+              )}
+
+              {/* The backdrop, whole and uncropped, filling the entire screen */}
               <Image
                 src={backdropUrl}
-                alt=""
+                alt={movie.name}
                 fill
+                priority
                 sizes="100vw"
-                aria-hidden="true"
-                className="scale-110 object-cover blur-2xl"
+                className={isPosterBackdrop ? "object-contain" : "object-cover"}
               />
-            )}
-
-            {/* The backdrop, whole and uncropped, filling the entire banner */}
-            <Image
-              src={backdropUrl}
-              alt={movie.name}
-              fill
-              priority
-              sizes="100vw"
-              className={isPosterBackdrop ? "object-contain" : "object-cover"}
+            </>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 dark:from-panel dark:via-panel-soft dark:to-ink"
             />
-          </>
-        ) : (
+          )}
+
+          {/* Fade the artwork into the page background for legible text */}
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 dark:from-panel dark:via-panel-soft dark:to-ink"
+            className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent dark:from-ink dark:via-ink/40"
           />
-        )}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-r from-white/50 via-transparent to-transparent dark:from-ink/50"
+          />
 
-        {/* Fade the backdrop into the page background for legible text */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent dark:from-ink dark:via-ink/40"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-white/50 via-transparent to-transparent dark:from-ink/50"
-        />
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+              {/* Clear the overlapping poster column (300px + gap) on md+ */}
+              <div className="md:pl-[336px]">
+                <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand">
+                  Movie Detail
+                </p>
 
-        <div className="absolute inset-x-0 bottom-0">
-          <div className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
-            {/* Clear the overlapping poster column (300px + gap) on md+ screens */}
-            <div className="md:pl-[336px]">
-              <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand">
-                Movie Detail
-              </p>
+                <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-5xl dark:text-white">
+                  {movie.name}
+                </h1>
 
-            <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-5xl dark:text-white">
-              {movie.name}
-            </h1>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  {hasRating ? (
+                    <span className="rounded-md bg-yellow-400 px-2 py-1 text-sm font-bold text-gray-950">
+                      IMDb {movie.imdbRating}
+                    </span>
+                  ) : (
+                    <span className="rounded-md border border-gray-300 bg-white/60 px-2 py-1 text-sm font-semibold text-gray-600 backdrop-blur-sm dark:border-white/15 dark:bg-white/10 dark:text-gray-400">
+                      Not Rated
+                    </span>
+                  )}
 
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-              {hasRating ? (
-                <span className="rounded-md bg-yellow-400 px-2 py-1 text-sm font-bold text-gray-950">
-                  IMDb {movie.imdbRating}
-                </span>
-              ) : (
-                <span className="rounded-md border border-gray-300 bg-white/60 px-2 py-1 text-sm font-semibold text-gray-600 backdrop-blur-sm dark:border-white/15 dark:bg-white/10 dark:text-gray-400">
-                  Not Rated
-                </span>
-              )}
-
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Released:{" "}
-                {movie.year && movie.year !== "N/A"
-                  ? movie.year
-                  : "Not Available"}
-              </span>
-
-              {runtime && (
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Runtime: {runtime}
-                </span>
-              )}
-
-              {country && (
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Country: {country}
-                </span>
-              )}
-            </div>
-
-            {genres.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {genres.map((genre) => (
-                  <span
-                    key={genre}
-                    className="inline-flex items-center rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand backdrop-blur-sm"
-                  >
-                    {genre}
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Released:{" "}
+                    {movie.year && movie.year !== "N/A"
+                      ? movie.year
+                      : "Not Available"}
                   </span>
-                ))}
+
+                  {runtime && (
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Runtime: {runtime}
+                    </span>
+                  )}
+
+                  {country && (
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Country: {country}
+                    </span>
+                  )}
+                </div>
+
+                {genres.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {genres.map((genre) => (
+                      <span
+                        key={genre}
+                        className="inline-flex items-center rounded-full border border-brand/25 bg-brand/10 px-3 py-1 text-xs font-semibold text-brand backdrop-blur-sm"
+                      >
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
             </div>
           </div>
         </div>

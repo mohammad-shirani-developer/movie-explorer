@@ -5,11 +5,12 @@ const MovieDetailsSkeleton = () => {
       aria-busy="true"
       aria-label="Loading movie details"
     >
-      {/* Backdrop banner skeleton */}
-      <section className="relative h-[420px] overflow-hidden sm:aspect-video sm:h-auto">
-        <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-panel" />
+      {/* Backdrop banner skeleton — mirrors the 16:9 cinema-screen frame */}
+      <section className="sm:pt-6">
+        <div className="relative mx-auto h-[420px] w-full max-w-[121vh] overflow-hidden bg-gray-200 sm:aspect-video sm:h-auto sm:rounded-2xl dark:bg-panel">
+          <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-panel" />
 
-        <div className="absolute inset-x-0 bottom-0">
+          <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
             <div className="h-4 w-28 animate-pulse rounded bg-gray-300/70 dark:bg-white/10" />
 
@@ -27,6 +28,7 @@ const MovieDetailsSkeleton = () => {
               <div className="h-6 w-16 animate-pulse rounded-full bg-gray-300/70 dark:bg-white/10" />
             </div>
           </div>
+        </div>
         </div>
       </section>
 
