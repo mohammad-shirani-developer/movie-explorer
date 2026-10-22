@@ -7,12 +7,20 @@ import ThemeToggle from "./ThemeToggle";
 const Header = () => {
   const pathname = usePathname();
 
-  const navLinkClass = (href: string) =>
-    `text-sm font-medium transition-colors ${
-      pathname === href
+  const navLinkClass = (href: string) => {
+    // Home matches exactly; section links also stay active on child routes
+    // (e.g. /movies/tt0111161 keeps the Movies link highlighted).
+    const isActive =
+      href === "/"
+        ? pathname === "/"
+        : pathname === href || pathname.startsWith(`${href}/`);
+
+    return `text-sm font-medium transition-colors ${
+      isActive
         ? "text-brand"
         : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
     }`;
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/70 bg-white/75 text-gray-900 backdrop-blur-md dark:border-white/10 dark:bg-ink/75 dark:text-white">

@@ -14,7 +14,8 @@ const FeaturedMoviesSkeleton = () => {
           <div className="h-5 w-full max-w-xl animate-pulse rounded bg-gray-200 dark:bg-white/10" />
         </div>
 
-        <MovieGridSkeleton count={4} />
+        {/* The real featured grid renders 8 cards (metas 11..18). */}
+        <MovieGridSkeleton count={8} />
       </div>
     </section>
   );

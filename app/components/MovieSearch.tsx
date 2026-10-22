@@ -158,6 +158,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
       <form onSubmit={handleSearch} className="flex w-full gap-3">
         <input
           type="text"
+          aria-label="Search movies"
           placeholder="Search movies..."
           value={query}
           className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
@@ -188,7 +189,10 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
       )}
 
       {error && (
-        <div className="flex min-h-[300px] items-center justify-center px-4">
+        <div
+          role="alert"
+          className="flex min-h-[300px] items-center justify-center px-4"
+        >
           <div className="w-full max-w-md rounded-xl border border-red-200 bg-red-50 px-6 py-10 text-center dark:border-red-400/20 dark:bg-panel">
             <h2 className="text-lg font-semibold text-red-600 dark:text-red-400">
               Something went wrong

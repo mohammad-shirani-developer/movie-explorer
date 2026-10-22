@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import MoviePoster from "@/app/components/MoviePoster";
 import MovieDetailsSkeleton from "@/app/components/skeletons/MovieDetailsSkeleton";
@@ -206,5 +207,36 @@ const MovieDetailsPage = ({ params }: MovieDetailsPageProps) => {
     </Suspense>
   );
 };
+
+export async function generateMetadata({
+  params,
+}: MovieDetailsPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  try {
+    const movie = await getMovieById(id);
+
+    if (!movie) {
+      return { title: "Movie not found" };
+    }
+
+    const description =
+      movie.description?.trim() ||
+      `Discover details, cast and ratings for ${movie.name}.`;
+    const posterUrl = movie.poster?.trim() || undefined;
+
+    return {
+      title: movie.name,
+      description: description.slice(0, 200),
+      openGraph: {
+        title: movie.name,
+        description: description.slice(0, 200),
+        images: posterUrl ? [posterUrl] : undefined,
+      },
+    };
+  } catch {
+    return { title: "Movie details" };
+  }
+}
 
 export default MovieDetailsPage;
