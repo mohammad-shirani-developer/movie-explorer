@@ -32,26 +32,40 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
   const backgroundUrl = movie.background?.trim() || null;
   const posterUrl = movie.poster?.trim() || null;
   const backdropUrl = backgroundUrl ?? posterUrl;
-  const isPosterBackdrop = !backgroundUrl && Boolean(posterUrl);
   const country = movie.country?.trim() && movie.country !== "N/A" ? movie.country : null;
   const runtime =
     movie.runtime?.trim() && movie.runtime !== "N/A" ? movie.runtime : null;
 
   return (
     <main className="min-h-screen">
-      {/* Cinematic backdrop banner */}
-      <section className="relative h-[420px] overflow-hidden sm:h-[480px]">
+      {/* Cinematic backdrop banner — complete artwork over its blurred extension */}
+      <section className="relative h-[440px] overflow-hidden sm:h-[540px]">
         {backdropUrl ? (
-          <Image
-            src={backdropUrl}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className={`object-cover ${
-              isPosterBackdrop ? "scale-110 blur-lg" : ""
-            }`}
-          />
+          <>
+            {/* Blurred extension fills the banner so the sides never look empty */}
+            <Image
+              src={backdropUrl}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              aria-hidden="true"
+              className="scale-110 object-cover blur-2xl"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-white/30 dark:bg-ink/40"
+            />
+
+            {/* The complete, uncropped artwork */}
+            <Image
+              src={backdropUrl}
+              alt={movie.name}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+          </>
         ) : (
           <div
             aria-hidden="true"
@@ -59,14 +73,14 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
           />
         )}
 
-        {/* Fade the backdrop into the page background */}
+        {/* Fade the backdrop into the page background for legible text */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-white/5 dark:from-ink dark:via-ink/70 dark:to-ink/5"
+          className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent dark:from-ink dark:via-ink/40"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-transparent dark:from-ink/60"
+          className="absolute inset-0 bg-gradient-to-r from-white/50 via-transparent to-transparent dark:from-ink/50"
         />
 
         <div className="absolute inset-x-0 bottom-0">
