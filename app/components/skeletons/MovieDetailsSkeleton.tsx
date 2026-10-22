@@ -1,60 +1,56 @@
 const MovieDetailsSkeleton = () => {
   return (
-    <main className="min-h-screen bg-gray-950 px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
-      <div
-        className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-6 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-12"
-        aria-busy="true"
-        aria-label="Loading movie details"
-      >
-        {/* Poster */}
-        <div className="mx-auto aspect-[2/3] w-full max-w-sm animate-pulse rounded-2xl border border-white/10 bg-gray-900 md:mx-0" />
+    <main
+      className="min-h-screen"
+      aria-busy="true"
+      aria-label="Loading movie details"
+    >
+      {/* Backdrop banner skeleton */}
+      <section className="relative h-[420px] overflow-hidden sm:h-[480px]">
+        <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-panel" />
 
-        {/* Movie information */}
-        <div className="flex flex-col">
-          {/* Title */}
-          <div className="space-y-3">
-            <div className="h-10 w-4/5 animate-pulse rounded bg-gray-800 sm:h-12 lg:h-14" />
-            <div className="h-10 w-2/5 animate-pulse rounded bg-gray-800 sm:h-12 lg:hidden" />
-          </div>
+        <div className="absolute inset-x-0 bottom-0">
+          <div className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+            <div className="h-4 w-28 animate-pulse rounded bg-gray-300/70 dark:bg-white/10" />
 
-          {/* Rating, year and runtime */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <div className="h-7 w-20 animate-pulse rounded-md bg-gray-800" />
-            <div className="h-5 w-28 animate-pulse rounded bg-gray-800" />
-            <div className="h-5 w-24 animate-pulse rounded bg-gray-800" />
-          </div>
+            <div className="mt-4 h-12 w-full max-w-xl animate-pulse rounded-lg bg-gray-300/70 dark:bg-white/10" />
 
-          {/* Genres */}
-          <div className="mt-5 flex min-h-7 flex-wrap gap-2">
-            <div className="h-7 w-20 animate-pulse rounded-full bg-gray-800" />
-            <div className="h-7 w-24 animate-pulse rounded-full bg-gray-800" />
-            <div className="h-7 w-16 animate-pulse rounded-full bg-gray-800" />
-          </div>
-
-          {/* Director and country */}
-          <div className="mt-6 space-y-4">
-            <div className="h-5 w-3/4 animate-pulse rounded bg-gray-800" />
-            <div className="h-5 w-1/2 animate-pulse rounded bg-gray-800" />
-          </div>
-
-          {/* Description */}
-          <div className="mt-6 space-y-3">
-            <div className="h-4 w-full animate-pulse rounded bg-gray-800" />
-            <div className="h-4 w-full animate-pulse rounded bg-gray-800" />
-            <div className="h-4 w-11/12 animate-pulse rounded bg-gray-800" />
-            <div className="h-4 w-4/5 animate-pulse rounded bg-gray-800" />
-          </div>
-
-          {/* Cast */}
-          <div className="mt-8">
-            <div className="h-7 w-20 animate-pulse rounded bg-gray-800" />
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              <div className="h-8 w-24 animate-pulse rounded-full bg-gray-800" />
-              <div className="h-8 w-32 animate-pulse rounded-full bg-gray-800" />
-              <div className="h-8 w-20 animate-pulse rounded-full bg-gray-800" />
-              <div className="h-8 w-28 animate-pulse rounded-full bg-gray-800" />
+            <div className="mt-4 flex flex-wrap gap-3">
+              <div className="h-8 w-20 animate-pulse rounded-md bg-gray-300/70 dark:bg-white/10" />
+              <div className="h-8 w-28 animate-pulse rounded-md bg-gray-300/70 dark:bg-white/10" />
+              <div className="h-8 w-24 animate-pulse rounded-md bg-gray-300/70 dark:bg-white/10" />
             </div>
+
+            <div className="mt-4 flex gap-2">
+              <div className="h-6 w-20 animate-pulse rounded-full bg-gray-300/70 dark:bg-white/10" />
+              <div className="h-6 w-24 animate-pulse rounded-full bg-gray-300/70 dark:bg-white/10" />
+              <div className="h-6 w-16 animate-pulse rounded-full bg-gray-300/70 dark:bg-white/10" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Poster + storyline skeleton */}
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-8 px-4 py-10 sm:px-6 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-12 lg:px-8">
+        <div className="aspect-[2/3] w-full max-w-[300px] animate-pulse rounded-2xl bg-gray-200 dark:bg-panel" />
+
+        <div className="space-y-3">
+          <div className="h-7 w-32 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+
+          <div className="space-y-3 pt-2">
+            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+            <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+            <div className="h-4 w-11/12 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+            <div className="h-4 w-4/5 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+          </div>
+
+          <div className="h-5 w-2/3 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+
+          <div className="flex flex-wrap gap-2 pt-6">
+            <div className="h-8 w-24 animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
+            <div className="h-8 w-32 animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
+            <div className="h-8 w-20 animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
+            <div className="h-8 w-28 animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
           </div>
         </div>
       </div>

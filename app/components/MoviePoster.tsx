@@ -17,7 +17,7 @@ const MoviePoster = ({ src, alt }: MoviePosterProps) => {
       <div
         role="img"
         aria-label={`Poster unavailable for ${alt}`}
-        className="flex h-full w-full items-center justify-center bg-gray-800 p-4 text-center text-sm text-gray-400"
+        className="flex h-full w-full items-center justify-center bg-gray-100 p-4 text-center text-sm text-gray-500 dark:bg-panel-soft dark:text-gray-500"
       >
         Poster unavailable
       </div>
@@ -28,7 +28,7 @@ const MoviePoster = ({ src, alt }: MoviePosterProps) => {
     <>
       {isLoading && (
         <div
-          className="absolute inset-0 animate-pulse bg-gray-800"
+          className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-panel-soft"
           aria-hidden="true"
         />
       )}

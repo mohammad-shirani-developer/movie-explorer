@@ -14,7 +14,7 @@ const MoviesPage = () => {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-gray-950 px-4 py-10 text-white sm:px-6 sm:py-14 lg:px-8">
+        <main className="min-h-screen px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
           <div className="mx-auto w-full max-w-7xl">
             <MovieGridSkeleton />
           </div>

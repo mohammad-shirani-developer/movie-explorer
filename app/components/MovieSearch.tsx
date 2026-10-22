@@ -124,14 +124,14 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
           type="text"
           placeholder="Search movies..."
           value={query}
-          className="w-full min-w-0 rounded-lg border border-white/10 bg-gray-900 px-4 py-3 text-sm text-white placeholder:text-gray-500 outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+          className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
           onChange={(event) => handleQueryChange(event.target.value)}
         />
 
         <button
           type="submit"
           disabled={isLoading}
-          className="shrink-0 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-gray-950 transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-60"
+          className="shrink-0 rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus-visible:ring-offset-ink"
         >
           Search
         </button>
@@ -139,7 +139,7 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
 
       {isLoading && (
         <div className="mt-6 space-y-4" aria-busy="true">
-          <p className="text-center text-sm font-medium text-gray-400">
+          <p className="text-center text-sm font-medium text-gray-600 dark:text-gray-400">
             Searching for movies...
           </p>
 
@@ -153,17 +153,17 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
 
       {error && (
         <div className="flex min-h-[300px] items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-xl border border-red-400/20 bg-gray-900 px-6 py-10 text-center">
-            <h2 className="text-lg font-semibold text-red-400">
+          <div className="w-full max-w-md rounded-xl border border-red-200 bg-red-50 px-6 py-10 text-center dark:border-red-400/20 dark:bg-panel">
+            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400">
               Something went wrong
             </h2>
-            <p className="mt-2 text-sm text-red-400">
+            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
               We couldn&apos;t complete your search. Please try again.
             </p>
             <button
               type="button"
               onClick={() => void performSearch()}
-              className="mt-4 rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-gray-950 transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+              className="mt-4 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink"
             >
               Try Again
             </button>
@@ -192,11 +192,11 @@ const MovieSearch = ({ onSearch }: MovieSearchProps) => {
 
       {hasSearched && !isLoading && !error && results.length === 0 && (
         <div className="flex min-h-[300px] items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-xl border border-white/10 bg-gray-900 px-6 py-10 text-center">
-            <h2 className="text-lg font-semibold text-white">
+          <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white px-6 py-10 text-center dark:border-white/10 dark:bg-panel">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               No movies found
             </h2>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
+            <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
               We couldn&apos;t find any movies matching your search. Try a
               different title or keyword.
             </p>

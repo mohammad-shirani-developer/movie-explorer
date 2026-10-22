@@ -8,7 +8,7 @@ const RetryButton = () => {
   return (
     <button
       onClick={handleRetry}
-      className="mt-6 rounded-lg bg-amber-400 px-5 py-3 text-sm font-semibold text-gray-950 transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-950"
+      className="mt-6 rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink"
     >
       Try Again
     </button>

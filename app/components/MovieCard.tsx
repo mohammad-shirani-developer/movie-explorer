@@ -14,16 +14,16 @@ const MovieCard = ({ movie }: MovieCardProps) => {
 
   const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
   return (
-    <li className="overflow-hidden rounded-xl border border-white/10 bg-gray-900 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40 hover:shadow-lg hover:shadow-black/20">
+    <li className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg hover:shadow-gray-900/10 dark:border-white/10 dark:bg-panel dark:hover:shadow-black/40">
       <Link href={`/movies/${movie.id}`}>
-        <div className="group relative aspect-[2/3] w-full overflow-hidden bg-gray-800">
+        <div className="group relative aspect-[2/3] w-full overflow-hidden bg-gray-100 dark:bg-panel-soft">
           <MoviePoster src={movie.poster} alt={movie.name} />
         </div>
       </Link>
 
       <div className="p-4 sm:p-5">
         <Link href={`/movies/${movie.id}`}>
-          <h2 className="line-clamp-2 text-lg font-semibold text-white transition-colors hover:text-amber-400">
+          <h2 className="line-clamp-2 text-lg font-semibold text-gray-900 transition-colors hover:text-brand dark:text-white">
             {movie.name}
           </h2>
         </Link>
@@ -33,16 +33,16 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             <p
               className={`inline-block rounded-md px-2 py-1 text-sm font-semibold ${
                 hasRating
-                  ? "bg-yellow-400 text-gray-900"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-yellow-400 text-gray-950"
+                  : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400"
               }`}
             >
               {hasRating ? `IMDb ${movie.imdbRating}` : "Not Rated"}
             </p>
 
-            <p className="text-sm font-medium text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
               Released:{" "}
-              <span className="text-gray-200">
+              <span className="text-gray-800 dark:text-gray-200">
                 {movie.year?.trim() || "Year unknown"}
               </span>
             </p>
@@ -53,13 +53,15 @@ const MovieCard = ({ movie }: MovieCardProps) => {
               genres.map((genre) => (
                 <span
                   key={genre}
-                  className="rounded-full border border-white/10 bg-gray-800 px-2 py-1 text-xs font-medium text-gray-300"
+                  className="rounded-full border border-gray-200 bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
                 >
                   {genre}
                 </span>
               ))
             ) : (
-              <span className="text-xs text-gray-500">Genres unavailable</span>
+              <span className="text-xs text-gray-500 dark:text-gray-500">
+                Genres unavailable
+              </span>
             )}
           </div>
         </div>

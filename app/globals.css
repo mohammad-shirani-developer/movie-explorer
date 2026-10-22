@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Cinematic Premium palette (Netflix/Disney+ inspired) */
+  --color-brand: #e50914;
+  --color-brand-bright: #f6121d;
+  --color-ink: #0a0a0f;
+  --color-panel: #14141d;
+  --color-panel-soft: #1c1c28;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hide scrollbars for horizontal poster rows while keeping scroll behavior */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

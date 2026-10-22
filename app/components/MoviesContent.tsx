@@ -139,18 +139,18 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
     selectedGenre !== "All Genres" || sortBy !== "default";
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen">
       <div className="mx-auto w-full max-w-none px-4 py-12 sm:px-5 sm:py-16 lg:px-6">
         <header className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-400">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">
             Discover your next favorite
           </p>
 
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
             Explore Movies
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-400 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base dark:text-gray-400">
             Browse movies, explore different genres, and find your next favorite
             film.
           </p>
@@ -161,7 +161,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
               <div className="min-w-0 w-full">
                 <label
                   htmlFor="genre"
-                  className="mb-2 block text-sm font-semibold text-gray-200"
+                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
                   Filter by Genre
                 </label>
@@ -170,7 +170,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   id="genre"
                   value={selectedGenre}
                   onChange={(event) => setSelectedGenre(event.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
                 >
                   {genres.map((genre) => (
                     <option key={genre} value={genre}>
@@ -183,7 +183,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
               <div className="w-full sm:max-w-xs">
                 <label
                   htmlFor="sort"
-                  className="mb-2 block text-sm font-semibold text-gray-200"
+                  className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
                   Sort by
                 </label>
@@ -192,7 +192,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   id="sort"
                   value={sortBy}
                   onChange={(event) => setSortBy(event.target.value)}
-                  className="w-full rounded-lg border border-white/10 bg-gray-900 px-4 py-3 text-sm text-white outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
                 >
                   <option value="default">Default</option>
                   <option value="rating-desc">Highest IMDb Rating</option>
@@ -207,7 +207,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                     setSelectedGenre("All Genres");
                     setSortBy("default");
                   }}
-                  className="w-full rounded-lg border border-white/10 bg-gray-900 px-4 py-3 text-sm font-medium text-gray-300 transition hover:border-amber-400/40 hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 md:col-span-2 lg:col-span-1"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-brand/40 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 md:col-span-2 lg:col-span-1 dark:border-white/10 dark:bg-panel dark:text-gray-300 dark:hover:bg-panel-soft dark:hover:text-white"
                 >
                   Reset Filters
                 </button>
@@ -247,7 +247,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 >
                   {isLoadingMore && (
                     <div className="w-full space-y-4 py-4" aria-busy="true">
-                      <p className="text-center text-sm text-gray-400">
+                      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                         Loading more movies...
                       </p>
 
@@ -268,7 +268,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                       <button
                         type="button"
                         onClick={() => void loadMoreMovies()}
-                        className="rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-gray-950 transition hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-gray-950"
+                        className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink"
                       >
                         Try Again
                       </button>
@@ -278,12 +278,12 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
               </>
             ) : (
               <div className="flex min-h-[300px] items-center justify-center px-4">
-                <div className="w-full max-w-md rounded-xl border border-white/10 bg-gray-900 px-6 py-10 text-center">
-                  <h2 className="text-lg font-semibold text-white">
+                <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white px-6 py-10 text-center dark:border-white/10 dark:bg-panel">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     No movies found
                   </h2>
 
-                  <p className="mt-2 text-sm leading-6 text-gray-400">
+                  <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
                     There are no movies available in this genre. Try selecting
                     another genre.
                   </p>

@@ -4,19 +4,22 @@ import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import RetryButton from "./RetryButton";
 
+const FEATURED_START = 11;
+const FEATURED_END = 19;
+
 const FeaturedMovies = async () => {
   let featuredMovies: Movie[];
 
   try {
     const data = await getPopularMovies();
-    featuredMovies = data.metas.slice(0, 4);
+    featuredMovies = data.metas.slice(FEATURED_START, FEATURED_END);
   } catch {
     return (
-      <section className="border-t border-white/10 px-4 py-16 text-center sm:px-6 lg:px-8">
-        <p className="text-lg font-semibold text-white">
+      <section className="px-4 py-16 text-center sm:px-6 lg:px-8">
+        <p className="text-lg font-semibold text-gray-900 dark:text-white">
           Unable to load featured movies
         </p>
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Something went wrong while loading movies. Please try again later.
         </p>
         <RetryButton />
@@ -24,25 +27,29 @@ const FeaturedMovies = async () => {
     );
   }
 
+  if (featuredMovies.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="border-t border-white/10 px-4 py-16 sm:px-6 lg:px-8">
+    <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-amber-400">
+            <p className="text-sm font-semibold uppercase tracking-widest text-brand">
               Handpicked for you
             </p>
-            <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
               Featured Movies
             </h2>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
+            <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
               Discover something great to watch next.
             </p>
           </div>
 
           <Link
             href="/movies"
-            className="shrink-0 text-sm font-semibold text-amber-400 transition hover:text-amber-300"
+            className="shrink-0 text-sm font-semibold text-brand transition hover:text-brand-bright"
           >
             View All <span aria-hidden="true">→</span>
           </Link>
