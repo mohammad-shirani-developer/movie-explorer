@@ -57,11 +57,23 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
               className="absolute inset-0 bg-white/30 dark:bg-ink/40"
             />
 
+            {/* Soft halo — a gently scaled, medium-blurred copy that bridges the
+                artwork's edges into the backdrop so no hard seam is visible */}
+            <Image
+              src={backdropUrl}
+              alt=""
+              fill
+              sizes="100vw"
+              aria-hidden="true"
+              className="scale-[1.16] object-contain blur-2xl"
+            />
+
             {/* The complete, uncropped artwork */}
             <Image
               src={backdropUrl}
               alt={movie.name}
               fill
+              priority
               sizes="100vw"
               className="object-contain"
             />
