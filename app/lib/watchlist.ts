@@ -79,6 +79,28 @@ let initialized = false;
 
 const listeners = new Set<() => void>();
 
+/* Cross-tab sync: when a second tab toggles something, the "storage"
+   event fires everywhere except the writer tab — refresh the cached
+   snapshot and notify so badges and lists stay consistent and a stale
+   tab never overwrites the other tab's changes with its old view. */
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key !== WATCHLIST_KEY && event.key !== null) {
+      return;
+    }
+
+    try {
+      snapshot = window.localStorage.getItem(WATCHLIST_KEY) ?? "";
+    } catch {
+      snapshot = "";
+    }
+
+    listeners.forEach((listener) => {
+      listener();
+    });
+  });
+}
+
 const subscribeToWatchlist = (listener: () => void) => {
   listeners.add(listener);
 

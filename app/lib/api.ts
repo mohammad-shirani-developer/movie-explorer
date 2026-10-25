@@ -27,6 +27,38 @@ const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
+ * Combines the per-request timeout signal with an optional caller signal.
+ * AbortSignal.any is only available on modern browsers (Chrome 116+,
+ * Safari 17.4+, Firefox 124+); on older ones the client-side calls
+ * (infinite scroll, search) used to throw before even reaching the
+ * network, so a tiny forwarding controller keeps them working.
+ */
+const combineSignals = (
+  timeoutSignal: AbortSignal,
+  callerSignal?: AbortSignal,
+): AbortSignal => {
+  if (!callerSignal) {
+    return timeoutSignal;
+  }
+
+  if (typeof AbortSignal.any === "function") {
+    return AbortSignal.any([timeoutSignal, callerSignal]);
+  }
+
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+
+  if (callerSignal.aborted || timeoutSignal.aborted) {
+    abort();
+  }
+
+  callerSignal.addEventListener("abort", abort, { once: true });
+  timeoutSignal.addEventListener("abort", abort, { once: true });
+
+  return controller.signal;
+};
+
+/**
  * Fetches a Cinemeta endpoint with a timeout and automatic retries.
  * Network failures and 5xx responses are retried; other HTTP errors
  * (404, 400, ...) fail immediately with a CinemetaHttpError.
@@ -38,9 +70,7 @@ const fetchCinemetaJson = async <T>(
 ): Promise<T> => {
   const url = `${CINEMETA_BASE_URL}${path}`;
   const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
-  const requestSignal = signal
-    ? AbortSignal.any([timeoutSignal, signal])
-    : timeoutSignal;
+  const requestSignal = combineSignals(timeoutSignal, signal);
 
   let lastError: unknown;
 
@@ -109,7 +139,21 @@ export const getMovieById = async (
       signal,
     );
 
-    return data.meta ?? null;
+    const meta = data.meta;
+
+    /* A 200 with an unusable body (empty meta, no id/name) must degrade to
+       "not found" instead of rendering a broken detail page. */
+    if (
+      !meta ||
+      typeof meta.id !== "string" ||
+      meta.id.trim() === "" ||
+      typeof meta.name !== "string" ||
+      meta.name.trim() === ""
+    ) {
+      return null;
+    }
+
+    return meta;
   } catch (error) {
     if (error instanceof CinemetaHttpError && error.status === 404) {
       return null;

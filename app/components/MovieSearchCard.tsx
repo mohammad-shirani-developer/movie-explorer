@@ -2,6 +2,7 @@ import Link from "next/link";
 import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie, MovieSearchResult } from "../types/movie";
 import MoviePoster from "./MoviePoster";
+import WatchlistButton from "./WatchlistButton";
 
 type MovieSearchCardProps = {
   movie: MovieSearchResult;
@@ -16,15 +17,35 @@ const MovieSearchCard = ({
 }: MovieSearchCardProps) => {
   const hasRating = parseImdbRating(details?.imdbRating) !== null;
   const genres = details?.genres?.filter((genre) => genre.trim()) ?? [];
+  const poster = details?.poster || movie.poster;
 
   return (
     <li className="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-xl hover:shadow-gray-900/10 dark:border-white/10 dark:bg-panel dark:hover:shadow-black/40">
-      <Link href={`/movies/${movie.id}`}>
-        <div className="relative aspect-[2/3] w-full overflow-hidden bg-gray-100 dark:bg-panel-soft">
-          <MoviePoster src={details?.poster || movie.poster} alt={movie.name} />
-        </div>
+      {/* Poster area: the link and the watchlist toggle are siblings — a
+          button nested inside a link would be invalid HTML. */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden bg-gray-100 dark:bg-panel-soft">
+        <Link
+          href={`/movies/${movie.id}`}
+          aria-label={movie.name}
+          className="relative block h-full w-full"
+        >
+          <MoviePoster src={poster} alt={movie.name} />
+        </Link>
 
-        <div className="p-4">
+        <WatchlistButton
+          movie={{
+            id: movie.id,
+            name: movie.name,
+            poster: poster || null,
+            year: details?.year || movie.releaseInfo || null,
+            imdbRating: details?.imdbRating ?? null,
+            genres: details?.genres ?? null,
+          }}
+          className="absolute right-2.5 top-2.5 opacity-0 transition-opacity duration-200 focus-visible:opacity-100 group-hover:opacity-100 sm:right-3 sm:top-3"
+        />
+      </div>
+
+      <div className="p-4">
           <h2 className="line-clamp-2 text-lg font-semibold text-gray-900 transition-colors group-hover:text-brand dark:text-white">
             {movie.name}
           </h2>
@@ -75,7 +96,6 @@ const MovieSearchCard = ({
             </div>
           </div>
         </div>
-      </Link>
     </li>
   );
 };

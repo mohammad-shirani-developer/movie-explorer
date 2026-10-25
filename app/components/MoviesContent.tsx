@@ -65,6 +65,18 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
     setSortBy(sort);
     syncFiltersToUrl(selectedGenre, sort);
   };
+
+  /* While search results are shown the filter UI is hidden — a stale
+     ?genre=... left in the address bar would produce a broken share link
+     that lands on an empty filtered view. */
+  useEffect(() => {
+    if (
+      hasSearched &&
+      (selectedGenre !== DEFAULT_GENRE || sortBy !== DEFAULT_SORT)
+    ) {
+      window.history.replaceState(null, "", "/movies");
+    }
+  }, [hasSearched, selectedGenre, sortBy]);
   const [allMovies, setAllMovies] = useState(movies);
   const [hasMoreMovies, setHasMoreMovies] = useState(hasMore);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -147,6 +159,14 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
     ),
   ];
 
+  /* A deep-linked ?genre=X can target a genre that only appears on pages
+     we have not loaded yet — keep it in the options so the trigger shows
+     the real selection instead of silently falling back to "All Genres". */
+  const genreOptions =
+    selectedGenre !== DEFAULT_GENRE && !genres.includes(selectedGenre)
+      ? [DEFAULT_GENRE, selectedGenre, ...genres.slice(1)]
+      : genres;
+
   const filteredMovies =
     selectedGenre === "All Genres"
       ? allMovies
@@ -210,7 +230,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   id="genre"
                   ariaLabel="Filter by genre"
                   value={selectedGenre}
-                  options={genres.map((genre) => ({
+                  options={genreOptions.map((genre) => ({
                     value: genre,
                     label: genre,
                   }))}
@@ -273,51 +293,13 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
               {selectedGenre !== "All Genres" && ` in ${selectedGenre}`}
             </p>
             {filteredMovies.length > 0 ? (
-              <>
-                <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7">
-                  {sortedMovies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                  ))}
-                </ul>
-
-                <div ref={observerTarget} className="h-10" aria-hidden="true" />
-                <div
-                  className="flex min-h-10 items-center justify-center"
-                  aria-live="polite"
-                >
-                  {isLoadingMore && (
-                    <div className="w-full space-y-4 py-4" aria-busy="true">
-                      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                        Loading more movies...
-                      </p>
-
-                      <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7">
-                        {Array.from({ length: 4 }, (_, index) => (
-                          <MovieCardSkeleton key={index} />
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {loadMoreError && !isLoadingMore && (
-                    <div className="flex flex-col items-center gap-2">
-                      <p className="text-sm text-red-400">
-                        Failed to load more movies.
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() => void loadMoreMovies()}
-                        className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink"
-                      >
-                        Try Again
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
+              <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7">
+                {sortedMovies.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} />
+                ))}
+              </ul>
             ) : (
-              <div className="flex min-h-[300px] items-center justify-center px-4">
+              <div className="mb-4 flex min-h-[300px] items-center justify-center px-4">
                 <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white px-6 py-10 text-center dark:border-white/10 dark:bg-panel">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     No movies found
@@ -330,6 +312,45 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 </div>
               </div>
             )}
+
+            {/* The infinite-scroll observer must keep running even when the
+                current filter matches zero loaded rows — a deep-linked genre
+                can live on pages that have not been fetched yet. */}
+            <div ref={observerTarget} className="h-10" aria-hidden="true" />
+            <div
+              className="flex min-h-10 items-center justify-center"
+              aria-live="polite"
+            >
+              {isLoadingMore && (
+                <div className="w-full space-y-4 py-4" aria-busy="true">
+                  <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                    Loading more movies...
+                  </p>
+
+                  <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-7">
+                    {Array.from({ length: 4 }, (_, index) => (
+                      <MovieCardSkeleton key={index} />
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {loadMoreError && !isLoadingMore && (
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-sm text-red-400">
+                    Failed to load more movies.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => void loadMoreMovies()}
+                    className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-bright focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-ink"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>

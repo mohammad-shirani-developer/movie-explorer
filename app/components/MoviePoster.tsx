@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 type MoviePosterProps = {
   src: string | null;
@@ -11,6 +11,15 @@ type MoviePosterProps = {
 const MoviePoster = ({ src, alt }: MoviePosterProps) => {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  /* onLoad alone can miss images that finish decoding between HTML parse
+     and hydration (repeat visits, back-cache) — those would sit behind the
+     pulsing overlay forever. A completed cached image is detected here. */
+  const attachImage = useCallback((element: HTMLImageElement | null) => {
+    if (element?.complete && element.naturalWidth > 0) {
+      setIsLoading(false);
+    }
+  }, []);
 
   if (!src?.trim() || hasError) {
     return (
@@ -38,6 +47,7 @@ const MoviePoster = ({ src, alt }: MoviePosterProps) => {
         alt={alt}
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        ref={attachImage}
         className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
           isLoading ? "opacity-0" : "opacity-100"
         }`}

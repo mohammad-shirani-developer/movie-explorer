@@ -6,7 +6,7 @@ import MovieDetailsSkeleton from "@/app/components/skeletons/MovieDetailsSkeleto
 import { getMovieById } from "@/app/lib/api";
 import { parseImdbRating } from "@/app/lib/movie-utils";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 
 type MovieDetailsPageProps = {
   params: Promise<{
@@ -14,9 +14,14 @@ type MovieDetailsPageProps = {
   }>;
 };
 
+/* One fetch per request shared by the page render and generateMetadata —
+   without cache() the same movie is fetched twice (the page render and
+   the metadata scope can't share Next's fetch memoization reliably). */
+const getMovieForRequest = cache(getMovieById);
+
 const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
   const { id } = await params;
-  const movie = await getMovieById(id);
+  const movie = await getMovieForRequest(id);
   if (!movie) {
     notFound();
   }
@@ -220,7 +225,7 @@ export async function generateMetadata({
   const { id } = await params;
 
   try {
-    const movie = await getMovieById(id);
+    const movie = await getMovieForRequest(id);
 
     if (!movie) {
       return { title: "Movie not found" };
