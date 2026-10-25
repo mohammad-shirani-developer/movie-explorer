@@ -2,6 +2,7 @@ import Link from "next/link";
 import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
 import MoviePoster from "./MoviePoster";
+import WatchlistButton from "./WatchlistButton";
 
 type MovieCardProps = {
   movie: Movie;
@@ -12,11 +13,22 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   const genres = movie.genres?.filter((genre) => genre.trim()) ?? [];
   return (
     <li className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg hover:shadow-gray-900/10 dark:border-white/10 dark:bg-panel dark:hover:shadow-black/40">
-      <Link href={`/movies/${movie.id}`}>
-        <div className="group relative aspect-[2/3] w-full overflow-hidden bg-gray-100 dark:bg-panel-soft">
+      {/* Poster area: the link and the watchlist toggle are siblings — a
+          button nested inside a link would be invalid HTML. */}
+      <div className="group relative aspect-[2/3] w-full overflow-hidden bg-gray-100 dark:bg-panel-soft">
+        <Link
+          href={`/movies/${movie.id}`}
+          aria-label={movie.name}
+          className="relative block h-full w-full"
+        >
           <MoviePoster src={movie.poster} alt={movie.name} />
-        </div>
-      </Link>
+        </Link>
+
+        <WatchlistButton
+          movie={movie}
+          className="absolute right-2.5 top-2.5 opacity-0 transition-opacity duration-200 focus-visible:opacity-100 group-hover:opacity-100 sm:right-3 sm:top-3"
+        />
+      </div>
 
       <div className="p-4 sm:p-5">
         <Link href={`/movies/${movie.id}`}>

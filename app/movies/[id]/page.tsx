@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import MoviePoster from "@/app/components/MoviePoster";
+import WatchlistButton from "@/app/components/WatchlistButton";
 import MovieDetailsSkeleton from "@/app/components/skeletons/MovieDetailsSkeleton";
 import { getMovieById } from "@/app/lib/api";
 import { parseImdbRating } from "@/app/lib/movie-utils";
@@ -147,6 +148,11 @@ const MovieDetailsContent = async ({ params }: MovieDetailsPageProps) => {
       <section className="mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-8 px-4 py-10 sm:px-6 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-12 lg:px-8">
         <div className="group relative mx-auto aspect-[2/3] w-full max-w-[300px] overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 shadow-2xl shadow-gray-900/10 md:-mt-28 md:mx-0 dark:border-white/10 dark:bg-panel-soft dark:shadow-black/50">
           <MoviePoster src={movie.poster} alt={movie.name} />
+
+          <WatchlistButton
+            movie={movie}
+            className="absolute right-3 top-3"
+          />
         </div>
 
         <div>

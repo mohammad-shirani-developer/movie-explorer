@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { getPopularMovies } from "../lib/api";
 import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
@@ -13,10 +14,56 @@ type MoviesContentProps = {
   hasMore: boolean;
 };
 
+const DEFAULT_GENRE = "All Genres";
+const DEFAULT_SORT = "default";
+const VALID_SORTS = ["default", "rating-desc", "rating-asc"] as const;
+
 const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
   const [hasSearched, setHasSearched] = useState(false);
-  const [selectedGenre, setSelectedGenre] = useState("All Genres");
-  const [sortBy, setSortBy] = useState("default");
+
+  /* URL-driven filters: genre and sort live in the query string
+     (?genre=Action&sort=rating-desc) so any filtered view is a shareable,
+     bookmarkable URL. The initial values come from useSearchParams — the
+     server reads the same request URL, so the SSR markup always matches the
+     hydration render. */
+  const searchParams = useSearchParams();
+  const initialGenre = searchParams.get("genre") ?? DEFAULT_GENRE;
+  const initialSort = VALID_SORTS.includes(
+    searchParams.get("sort") as (typeof VALID_SORTS)[number],
+  )
+    ? (searchParams.get("sort") as string)
+    : DEFAULT_SORT;
+
+  const [selectedGenre, setSelectedGenre] = useState(initialGenre);
+  const [sortBy, setSortBy] = useState(initialSort);
+
+  /* replaceState (not router.push): filtering should update the shareable
+     URL without pushing a history entry per drag of the select and without
+     re-running the server component for a client-side transformation. */
+  const syncFiltersToUrl = useCallback((genre: string, sort: string) => {
+    const params = new URLSearchParams();
+
+    if (genre !== DEFAULT_GENRE) {
+      params.set("genre", genre);
+    }
+
+    if (sort !== DEFAULT_SORT) {
+      params.set("sort", sort);
+    }
+
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `/movies?${query}` : "/movies");
+  }, []);
+
+  const handleGenreChange = (genre: string) => {
+    setSelectedGenre(genre);
+    syncFiltersToUrl(genre, sortBy);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort);
+    syncFiltersToUrl(selectedGenre, sort);
+  };
   const [allMovies, setAllMovies] = useState(movies);
   const [hasMoreMovies, setHasMoreMovies] = useState(hasMore);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -128,7 +175,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
   });
 
   const hasActiveFilters =
-    selectedGenre !== "All Genres" || sortBy !== "default";
+    selectedGenre !== DEFAULT_GENRE || sortBy !== DEFAULT_SORT;
 
   return (
     <main className="min-h-screen">
@@ -161,7 +208,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 <select
                   id="genre"
                   value={selectedGenre}
-                  onChange={(event) => setSelectedGenre(event.target.value)}
+                  onChange={(event) => handleGenreChange(event.target.value)}
                   className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
                 >
                   {genres.map((genre) => (
@@ -183,7 +230,7 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 <select
                   id="sort"
                   value={sortBy}
-                  onChange={(event) => setSortBy(event.target.value)}
+                  onChange={(event) => handleSortChange(event.target.value)}
                   className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
                 >
                   <option value="default">Default</option>
@@ -196,8 +243,9 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setSelectedGenre("All Genres");
-                    setSortBy("default");
+                    setSelectedGenre(DEFAULT_GENRE);
+                    setSortBy(DEFAULT_SORT);
+                    syncFiltersToUrl(DEFAULT_GENRE, DEFAULT_SORT);
                   }}
                   className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-brand/40 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 md:col-span-2 lg:col-span-1 dark:border-white/10 dark:bg-panel dark:text-gray-300 dark:hover:bg-panel-soft dark:hover:text-white"
                 >

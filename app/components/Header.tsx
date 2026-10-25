@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useWatchlist } from "../lib/watchlist";
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const pathname = usePathname();
+  const { entries, isHydrated } = useWatchlist();
 
   const navLinkClass = (href: string) => {
     // Home matches exactly; section links also stay active on child routes
@@ -43,6 +45,20 @@ const Header = () => {
             <li>
               <Link href="/movies" className={navLinkClass("/movies")}>
                 Movies
+              </Link>
+            </li>
+
+            <li>
+              <Link href="/watchlist" className={navLinkClass("/watchlist")}>
+                Watchlist
+                {/* Count appears only after hydration: the server snapshot
+                    is empty, so the badge mounts with the real client value
+                    and can never disagree with the SSR HTML. */}
+                {isHydrated && entries.length > 0 && (
+                  <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1.5 text-xs font-bold text-white">
+                    {entries.length > 99 ? "99+" : entries.length}
+                  </span>
+                )}
               </Link>
             </li>
           </ul>
