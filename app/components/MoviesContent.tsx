@@ -7,6 +7,7 @@ import { parseImdbRating } from "../lib/movie-utils";
 import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import MovieSearch from "./MovieSearch";
+import FilterDropdown from "./FilterDropdown";
 import MovieCardSkeleton from "./skeletons/MovieCardSkeleton";
 
 type MoviesContentProps = {
@@ -205,18 +206,16 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   Filter by Genre
                 </label>
 
-                <select
+                <FilterDropdown
                   id="genre"
+                  ariaLabel="Filter by genre"
                   value={selectedGenre}
-                  onChange={(event) => handleGenreChange(event.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
-                >
-                  {genres.map((genre) => (
-                    <option key={genre} value={genre}>
-                      {genre}
-                    </option>
-                  ))}
-                </select>
+                  options={genres.map((genre) => ({
+                    value: genre,
+                    label: genre,
+                  }))}
+                  onChange={handleGenreChange}
+                />
               </div>
 
               <div className="w-full sm:max-w-xs">
@@ -227,16 +226,17 @@ const MoviesContent = ({ movies, hasMore }: MoviesContentProps) => {
                   Sort by
                 </label>
 
-                <select
+                <FilterDropdown
                   id="sort"
+                  ariaLabel="Sort movies"
                   value={sortBy}
-                  onChange={(event) => handleSortChange(event.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-panel dark:text-white"
-                >
-                  <option value="default">Default</option>
-                  <option value="rating-desc">Highest IMDb Rating</option>
-                  <option value="rating-asc">Lowest IMDb Rating</option>
-                </select>
+                  options={[
+                    { value: "default", label: "Default" },
+                    { value: "rating-desc", label: "Highest IMDb Rating" },
+                    { value: "rating-asc", label: "Lowest IMDb Rating" },
+                  ]}
+                  onChange={handleSortChange}
+                />
               </div>
 
               {hasActiveFilters && (
