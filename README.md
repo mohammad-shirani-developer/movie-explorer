@@ -1,3 +1,5 @@
+[![CI](https://github.com/mohammad-shirani-developer/movie-explorer/actions/workflows/ci.yml/badge.svg)](https://github.com/mohammad-shirani-developer/movie-explorer/actions/workflows/ci.yml)
+
 # Movie Explorer
 
 A movie discovery web application built with Next.js, TypeScript, and Tailwind CSS, powered by the Cinemeta API.
